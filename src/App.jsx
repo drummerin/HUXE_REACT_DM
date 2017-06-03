@@ -24,10 +24,15 @@ import MenuHeader from './components/MenuHeader';
 
 
 const styles = {
+  htmlStyles: {
+    backgroundColor: '#d8d8d8',
+    color: '#A9A9A9',
+  },
   content: {
     padding: 16,
     maxWidth: 800,
     transition: transitions.easeOut(null, 'padding-left', null),
+    color: '#2f6fff',
   },
   menuLink: {
     textDecoration: 'none',
@@ -87,23 +92,6 @@ export default class App extends React.Component {
     project: PropTypes.object,
   };
 
-  componentWillMount() {
-    const mql = window.matchMedia('(min-width: 840px)');
-    mql.addListener(() => {
-      this.mqlChange(mql.matches);
-    });
-    this.mqlChange(mql.matches);
-  }
-
-  mqlChange(matches) {
-    this.setState({
-      drawer: {
-        open: matches,
-        docked: matches,
-      },
-    });
-  }
-
   toggleDrawer() {
     this.setState({
       drawer: {
@@ -115,26 +103,27 @@ export default class App extends React.Component {
 
   closeDrawer() {
     if (!this.state.sidebarDocked) {
-      this.setState({
-        sidebarOpen: false,
-      });
+      this.toggleDrawer();
     }
   }
 
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
 
+    document.querySelector('html').style.backgroundColor = styles.htmlStyles.backgroundColor;
+    document.querySelector('html').style.color = styles.htmlStyles.color;
+
     return <MuiThemeProvider>
           <Router>
             <div>
-              <AppBar title={this.state.project}
+              <AppBar title='Test'
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
-                      style={{ paddingLeft }}/>
+                      style={{ paddingLeft, backgroundColor: '#2f6fff' }}/>
               <Drawer open={this.state.drawer.open}
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
-              <MenuHeader project={this.props.project.name}/>
+              <MenuHeader />
                   {routes.map(route => (
                       <Link to={route.link} key={route.link} style={styles.menuLink}>
                         <MenuItem primaryText={route.title}
@@ -145,7 +134,7 @@ export default class App extends React.Component {
               </Drawer>
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
-                      <Route exact
+                      <Route exact={route.exact}
                              key={route.link}
                              path={route.link}
                              component={route.component}/>

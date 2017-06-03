@@ -28,12 +28,7 @@ export default class About extends React.Component {
                     Contact: sophie.drummer@web.de<br/>
                     Version: {this.state.version}
                 </p>
-                <h2>Rechtliche Information</h2>
-                <p>
-                    Dieses Programm ist kein offizielles Program des Österreichischen Rundfunks.
-                    Alle Services zu dieser Radio Station können
-                    unter der offiziellen Website abgerufen werden.
-                </p>
+
             </Paper>
         </div>;
   }
