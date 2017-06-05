@@ -4,6 +4,13 @@ export function setProject(project) {
     payload: project,
   };
 }
+export function addProject(project) {
+  return {
+    type: 'ADD_PROJECT',
+    payload: project,
+  };
+}
+
 export function changeSettings(update) {
   return {
     type: 'CHANGE_SETTINGS',

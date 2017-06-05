@@ -22,7 +22,16 @@ export default function reducer(state = {
         project: {
           ...action.payload,
         },
-        // theme: getTheme(action.payload.shortName, state.settings.dark),
+              // theme: getTheme(action.payload.shortName, state.settings.dark),
+      };
+    }
+    case 'ADD_PROJECT': {
+      return {
+        ...state,
+        project: {
+          ...action.payload,
+        },
+              // theme: getTheme(action.payload.shortName, state.settings.dark),
       };
     }
     case 'CHANGE_SETTINGS': {

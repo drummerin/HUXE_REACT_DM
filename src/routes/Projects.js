@@ -36,7 +36,8 @@ export default class Projects extends React.Component {
   }
 
   makeNewProject() {
-    console.log('new project clicked');
+    // console.log('new project clicked');
+    console.log(this.props.project);
   }
 
   render() {
@@ -54,7 +55,6 @@ export default class Projects extends React.Component {
                             onTouchTap={() => this.makeNewProject()}>
                     <ActionNew/>
                 </IconButton>
-
             </Paper>
         </div>;
   }
