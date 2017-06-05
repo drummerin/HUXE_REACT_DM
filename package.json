@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --content-base public --open --history-api-fallback"
+    "start": "node server",
+    "watch": "webpack --watch",
+    "dev": "concurrently --kill-others --prefix \"[{name}]\" --names \"server, webpack\" \"npm start\" \"npm run watch\"",
+    "open": "opn http://localhost:8080"
   },
   "repository": {
     "type": "git",
@@ -22,7 +25,9 @@
   "homepage": "https://github.com/drummerin/HUXE_REACT_DM#readme",
   "dependencies": {
     "firebase": "^3.7.4",
+    "express": "^4.15.3",
     "material-ui": "^0.17.4",
+    "morgan": "^1.8.2",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
@@ -31,7 +36,8 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
-    "redux-promise-middleware": "^4.2.0"
+    "redux-promise-middleware": "^4.2.0",
+    "ws": "^2.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -41,6 +47,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "concurrently": "^3.4.0",
     "css-loader": "^0.28.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.3",
