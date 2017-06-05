@@ -22,5 +22,20 @@ module.exports = {
     },
     rules: {
         'linebreak-style': 0,
+        'class-methods-use-this': ['error', {
+            exceptMethods: [
+                'render',
+                'getInitialState',
+                'getDefaultProps',
+                'getChildContext',
+                'componentWillMount',
+                'componentDidMount',
+                'componentWillReceiveProps',
+                'shouldComponentUpdate',
+                'componentWillUpdate',
+                'componentDidUpdate',
+                'componentWillUnmount',
+            ],
+        }]
     }
 };

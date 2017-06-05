@@ -21,7 +21,6 @@ import Settings from './routes/Settings';
 import About from './routes/About';
 import MenuHeader from './components/MenuHeader';
 
-
 const styles = {
   htmlStyles: {
     backgroundColor: '#d8d8d8',
