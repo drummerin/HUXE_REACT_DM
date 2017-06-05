@@ -16,7 +16,7 @@ export default function reducer(state = {
   },*/
 }, action) {
   switch (action.type) {
-    case 'SET_STATION': {
+    case 'SET_PROJECT': {
       return {
         ...state,
         project: {

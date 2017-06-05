@@ -19,7 +19,6 @@ import Projects from './routes/Projects';
 import Components from './routes/Components';
 import Settings from './routes/Settings';
 import About from './routes/About';
-import Todo from './routes/Todo';
 import MenuHeader from './components/MenuHeader';
 
 
@@ -65,12 +64,12 @@ const routes = [
     component: About,
     icon: <InfoIcon/>,
   },
-  {
+  /*{
     link: '/todo',
     title: 'Todo',
     component: Todo,
     icon: <InfoIcon/>,
-  },
+  },*/
 ];
 
 @connect(store => ({
@@ -116,14 +115,14 @@ export default class App extends React.Component {
     return <MuiThemeProvider>
           <Router>
             <div>
-              <AppBar title='Test'
+              <AppBar title={this.state.project}
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
                       style={{ paddingLeft, backgroundColor: '#2f6fff' }}/>
               <Drawer open={this.state.drawer.open}
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
-              <MenuHeader />
+              <MenuHeader project={this.props.project.name}/>
                   {routes.map(route => (
                       <Link to={route.link} key={route.link} style={styles.menuLink}>
                         <MenuItem primaryText={route.title}

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import IconButton from 'material-ui/IconButton';
+import ActionNew from 'material-ui/svg-icons/file/create-new-folder';
 import Paper from 'material-ui/Paper';
 import projects from '../projects';
 import { setProject as setProjectAction } from '../actions';
@@ -33,6 +35,10 @@ export default class Projects extends React.Component {
     }
   }
 
+  makeNewProject() {
+    console.log('new project clicked');
+  }
+
   render() {
     return <div>
             <h1>{this.constructor.name}</h1>
@@ -44,7 +50,14 @@ export default class Projects extends React.Component {
                                                           key={project.name}
                                                           style={styles.radioButton}/>)}
                 </RadioButtonGroup>
+                <IconButton className="addNewProjectButton"
+                            onTouchTap={() => this.makeNewProject()}>
+                    <ActionNew/>
+                </IconButton>
+
             </Paper>
         </div>;
   }
+
+
 }
