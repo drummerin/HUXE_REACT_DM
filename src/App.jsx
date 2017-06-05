@@ -13,11 +13,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import transitions from 'material-ui/styles/transitions';
 import ProjectsIcon from 'material-ui/svg-icons/av/library-books';
 import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
+import ChatIcon from 'material-ui/svg-icons/communication/chat';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import Projects from './routes/Projects';
 import Components from './routes/Components';
 import Settings from './routes/Settings';
+import Chat from './routes/Chat.jsx';
 import About from './routes/About';
 import MenuHeader from './components/MenuHeader';
 
@@ -64,7 +66,13 @@ const routes = [
     component: About,
     icon: <InfoIcon/>,
   },
-  /*{
+  {
+    link: '/chat',
+    title: 'Chat',
+    component: Chat,
+    icon: <ChatIcon/>,
+  },
+  /* {
     link: '/todo',
     title: 'Todo',
     component: Todo,
