@@ -24,6 +24,12 @@ const styles = {
   name: {
     color: 'inherit',
   },
+  sender: {
+    fontSize: 12,
+    paddingBottom: '5px',
+    color: 'grey',
+    fontStyle: 'italic',
+  },
 };
 
 @connect(store => ({
@@ -37,7 +43,6 @@ export default class Chat extends React.Component {
       name: '',
       messageInput: '',
       messages: [],
-      blue: '#2f6fff',
     };
   }
 
@@ -120,13 +125,11 @@ export default class Chat extends React.Component {
                          fullWidth={true}
                          value={this.state.nameInput}
                          onChange={(e, v) => this.nameInput(v)}
-                         floatingLabelFocusStyle={{ color: this.state.blue }}
-                         underlineFocusStyle={{ borderColor: this.state.blue }}/>
+                         />
               <RaisedButton label="Start Chat"
                             primary={true}
                             disabled={!this.state.nameInput}
-                            onTouchTap={() => this.setName()}
-                            backgroundColor={this.state.blue}/>
+                            onTouchTap={() => this.setName()}/>
             </form>
           </Paper> :
           <div>
@@ -134,18 +137,17 @@ export default class Chat extends React.Component {
                 chatItem.me ?
                     <div key={chatItem.id} style={{ textAlign: 'right' }}>
                       <Paper style={styles.message}>
-                        <span>{this.state.name}: </span>
+                        <div style={styles.sender}>{this.state.name} </div>
                         {chatItem.message}
                       </Paper>
                     </div> :
                     <div key={chatItem.id} >
                       <Paper style={styles.message}>
-                              <a href="#"
+                              <div style={styles.sender}><a href="#"
                                  style={styles.name}
                                  onClick={() => this.startCall(chatItem.name)}>
                                   {chatItem.name}
-                              </a>
-                        <span>: </span>
+                              </a></div>
                           {chatItem.message}
                       </Paper>
                     </div>
@@ -155,9 +157,7 @@ export default class Chat extends React.Component {
                   <TextField floatingLabelText="Write something"
                              fullWidth={true}
                              value={this.state.messageInput}
-                             onChange={(e, v) => this.setState({ messageInput: v })}
-                             floatingLabelFocusStyle={{ color: this.state.blue }}
-                             underlineFocusStyle={{ borderColor: this.state.blue }}/>
+                             onChange={(e, v) => this.setState({ messageInput: v })} />
                 </form>
               </Paper>
             </div>

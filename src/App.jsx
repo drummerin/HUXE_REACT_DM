@@ -10,6 +10,7 @@ import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import transitions from 'material-ui/styles/transitions';
 import ProjectsIcon from 'material-ui/svg-icons/av/library-books';
 import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
@@ -38,6 +39,12 @@ const styles = {
     textDecoration: 'none',
   },
 };
+
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: '#2f6fff',
+  },
+});
 
 const routes = [
   {
@@ -119,7 +126,7 @@ export default class App extends React.Component {
     document.querySelector('html').style.backgroundColor = styles.htmlStyles.backgroundColor;
     document.querySelector('html').style.color = styles.htmlStyles.color;
 
-    return <MuiThemeProvider>
+    return <MuiThemeProvider muiTheme={muiTheme}>
           <Router>
             <div>
               <AppBar title={this.state.project}
