@@ -6,8 +6,9 @@ const styles = {
   container: {
     padding: 10,
     lineHeight: '1.4em',
-    color: 'red',
+    color: '#656565',
     fontFamily: 'Asap',
+    width: 600,
   },
 };
 

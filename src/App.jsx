@@ -31,7 +31,7 @@ const styles = {
   },
   content: {
     padding: 16,
-    maxWidth: 800,
+    maxWidth: 1000,
     transition: transitions.easeOut(null, 'padding-left', null),
     color: '#2f6fff',
   },

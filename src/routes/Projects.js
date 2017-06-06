@@ -14,6 +14,7 @@ import { setProject as setProjectAction } from '../actions';
 const styles = {
   container: {
     padding: 10,
+    width: 800,
   },
   radioButton: {
     padding: 10,
