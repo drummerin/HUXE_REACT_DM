@@ -34,8 +34,6 @@ const styles = {
 
 
 export default class Projects extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -61,8 +59,10 @@ export default class Projects extends React.Component {
     dataSnapshot.forEach((childSnapshot) => {
               // childData will be the actual contents of the child
       const childData = childSnapshot.val();
-      console.log(childData);
-      if (!this.state.projectList.includes(childData)) {
+      console.log(`childData ${childData}`);
+      if (this.state.projectList.indexOf(childData) === -1) {
+        console.log('not contained');
+        // wieso fuegst du die der Datei hinzu?
         projects.push({
           name: childData,
           color: '#D80926',
@@ -73,8 +73,7 @@ export default class Projects extends React.Component {
       }
     });
 
-
-    console.log(this.state.projectList);
+    console.log(`projectList ${this.state.projectList}`);
     this.setState(this.state);
   }
 
@@ -120,14 +119,16 @@ export default class Projects extends React.Component {
   }
 
   render() {
+    console.log('render');
     return <div>
             <h1>{this.constructor.name}</h1>
             <Paper style={styles.container}>
                 <RadioButtonGroup name="projects" valueSelected={this.props.project.name}
                                   onChange={(e, value) => this.setProject(value)}>
-                    {projects.map(project => <RadioButton value={project.name}
-                                                          label={project.name}
-                                                          key={project.name}
+
+                    { this.state.projectList.map(project => <RadioButton value={project}
+                                                          label={project}
+                                                           key={project}
                                                           style={styles.radioButton}/>)}
                 </RadioButtonGroup>
                 <FlatButton onTouchTap={() => this.onButtonClick()}

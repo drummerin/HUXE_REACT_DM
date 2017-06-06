@@ -30,6 +30,9 @@ const styles = {
     color: 'grey',
     fontStyle: 'italic',
   },
+  ownMessages: {
+    backgroundColor: 'green',
+  },
 };
 
 @connect(store => ({
@@ -116,6 +119,8 @@ export default class Chat extends React.Component {
   }
 
   render() {
+    const ownMessageColor = '#ddfbff';
+
     return <div>
       <h1>{this.constructor.name}</h1>
         {!this.state.name ?
@@ -136,7 +141,7 @@ export default class Chat extends React.Component {
             {this.state.messages.map(chatItem => (
                 chatItem.me ?
                     <div key={chatItem.id} style={{ textAlign: 'right' }}>
-                      <Paper style={styles.message}>
+                      <Paper style={{ ...styles.message, backgroundColor: ownMessageColor }}>
                         <div style={styles.sender}>{this.state.name} </div>
                         {chatItem.message}
                       </Paper>
