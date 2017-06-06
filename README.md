@@ -11,5 +11,5 @@ To run this project:
 * Download the project
 * Enter folder in your console
 * execute >npm install
-* after the dependencies were installed, execute >npm start
+* after the dependencies were installed, execute >npm run dev
 * enjoy on http://localhost:8080/

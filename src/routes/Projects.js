@@ -32,33 +32,50 @@ const styles = {
   project: store.project,
 }))
 
+
 export default class Projects extends React.Component {
+
 
   constructor(props) {
     super(props);
     this.state = {
       inputActive: false,
       value: '',
+      projectList: [],
     };
+
 
     // this.onButtonClick = this.onButtonClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.componentWillMount = this.componentWillMount.bind(this);
+    this.buildProjectList = this.buildProjectList.bind(this);
+    // this.componentWillMount = this.componentWillMount.bind(this);
   }
   componentWillMount() {
-    const query = firebase.database().ref('value').orderByKey();
-    query.once('value')
-          .then((snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                  // childData will be the actual contents of the child
-              const childData = childSnapshot.val();
-              projects.push({
-                name: childData,
-                color: '#D80926',
-                dark: false,
-              });
-            });
-          });
+    // const query = firebase.database().ref('value').orderByKey();
+    firebase.database().ref('value').on('value', this.buildProjectList);
+    console.log('component mounts');
+    // query.on('value', this.buildProjectList);
+  }
+
+  buildProjectList(dataSnapshot) {
+    dataSnapshot.forEach((childSnapshot) => {
+              // childData will be the actual contents of the child
+      const childData = childSnapshot.val();
+      console.log(childData);
+      if (!this.state.projectList.includes(childData)) {
+        projects.push({
+          name: childData,
+          color: '#D80926',
+          dark: false,
+        });
+        this.state.projectList.push(childData);
+        // ... ?
+      }
+    });
+
+
+    console.log(this.state.projectList);
+    this.setState(this.state);
   }
 
   static propTypes = {
@@ -90,14 +107,15 @@ export default class Projects extends React.Component {
   }
 
   addProject() {
-    projects.push({
+    /* projects.push({
       name: this.state.value,
       color: '#D80926',
       dark: false,
-    });
+    });*/
     // console.log(this.props.project);
     // console.log(projects.length);
     firebase.database().ref('value').push(this.state.value);
+    // this.buildProjectList();
     this.setState({ value: '' });
   }
 
