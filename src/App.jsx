@@ -132,7 +132,7 @@ export default class App extends React.Component {
               <AppBar title={this.state.project}
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
-                      style={{ paddingLeft, backgroundColor: '#2f6fff' }}/>
+                      style={{ paddingLeft }}/>
               <Drawer open={this.state.drawer.open}
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
