@@ -120,9 +120,9 @@ export default class Projects extends React.Component {
   }
 
   render() {
-    console.log('render');
     return <div>
             <h1>{this.constructor.name}</h1>
+            <h2>{this.props.project.projectName}</h2>
             <Paper style={styles.container}>
                 <RadioButtonGroup name="projects" valueSelected={this.props.project.name}
                                   onChange={(e, value) => this.setProject(value)}>
