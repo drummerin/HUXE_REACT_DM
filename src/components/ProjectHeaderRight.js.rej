@@ -1,4 +1,4 @@
-diff a/src/components/MenuHeader.js b/src/components/MenuHeader.js	(rejected hunks)
+diff a/src/components/ProjectHeaderRight.js b/src/components/ProjectHeaderRight.js	(rejected hunks)
 @@ -13,21 +13,10 @@
  };
  

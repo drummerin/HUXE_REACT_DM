@@ -19,8 +19,18 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import Dialog from 'material-ui/Dialog';
+import DatePicker from 'material-ui/DatePicker';
+import InputField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import {
+    Table,
+    TableBody,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
 
 import { List, ListItem } from 'material-ui/List';
 
@@ -29,6 +39,7 @@ import Components from './routes/Components';
 import Settings from './routes/Settings';
 import Chat from './routes/Chat.jsx';
 import About from './routes/About';
+import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
 import { setProject as setProjectAction, addProject as addProjectAction } from './actions';
 import projects from './projects';
@@ -99,13 +110,22 @@ export default class App extends React.Component {
         open: false,
         docked: false,
       },
+      drawerRight: {
+        open: true,
+        },
       dialogOpen: false,
       newProjectDialog: {
-        input: '',
+        projectName: '',
+        projectDescription: '',
+        projectAuthor: '',
+        projectDate: '',
+        projectColor: '',
+        errorText: 'This field is required!',
       },
     };
     this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
   }
 
   static propTypes = {
@@ -127,7 +147,8 @@ export default class App extends React.Component {
     dataSnapshot.forEach((childSnapshot) => {
             // childData will be the actual contents of the child
       const childData = childSnapshot.val();
-      console.log(`childData ${childData.projectName}`);
+      console.log(`childData name ${childData.projectName}`);
+      console.log(`childData ${childData}`);
       // if (this.state.projectList.indexOf(childData) === -1) {
       if (projects.indexOf(childData) === -1) {
         console.log('not contained');
@@ -155,7 +176,7 @@ export default class App extends React.Component {
   }
 
   handleOpenDialog = () => {
-    this.setState({ dialogOpen: true });
+    this.setState({ dialogOpen: true});
   };
 
   handleCloseDialog = () => {
@@ -163,11 +184,22 @@ export default class App extends React.Component {
   };
   addProject() {
     firebase.database().ref('projects').push({
-      projectName: this.state.newProjectDialog.input });
+      projectName: this.state.newProjectDialog.projectName,
+      projectDescription: this.state.newProjectDialog.projectDescription,
+      projectAuthors: this.state.newProjectDialog.projectAuthor,
+      projectDate: this.state.newProjectDialog.projectDate,
+      projectColor: this.state.newProjectDialog.projectColor});
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(addProjectAction(project));
     }
+    this.state.newProjectDialog =  {
+      projectName: '',
+      projectDescription: '',
+      projectAuthors: '',
+      projectDate: null,
+      projectColor: '',
+      }
   }
   setProject(name) {
     const project = projects.find(loopProject => loopProject === name);
@@ -178,12 +210,20 @@ export default class App extends React.Component {
 
   handleChange = (event) => {
     this.setState({
-      newProjectDialog: {
-        ...this.state.newProjectDialog,
-        input: event.target.value,
-      },
+        newProjectDialog: {
+            ...this.state.newProjectDialog,
+            [event.target.id]: event.target.value,
+        },
     });
   };
+    handleDateChange = (event, date) => {
+        this.setState({
+            newProjectDialog: {
+                ...this.state.newProjectDialog,
+                projectDate: date.toString(),
+            },
+        });
+    };
 
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
@@ -211,19 +251,62 @@ export default class App extends React.Component {
         leftIcon={<NewProjectIcon/>}
         onTouchTap={() => this.handleOpenDialog() }/>);
 
-    const actions = [
-      <FlatButton
-              label="Cancel"
-              primary={true}
-              onTouchTap={this.handleCloseDialog}
-          />,
-      <FlatButton
-              label="Add"
-              primary={true}
-              keyboardFocused={true}
-              onTouchTap={() => { this.addProject(); this.handleCloseDialog(); }}
-          />,
-    ];
+    let projectAlreadyExists = false;
+    projects.forEach((project) => {
+    if(project.projectName === this.state.newProjectDialog.projectName){
+        console.log("jumps into checking TRUE")
+        projectAlreadyExists = true;
+    }
+    });
+
+    let actions;
+    if(projectAlreadyExists){
+        this.state.newProjectDialog.errorText = 'this project already exists!';
+        actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.handleCloseDialog}
+            />, <FlatButton
+                label="Add"
+                disabled={true}
+                primary={true}
+                keyboardFocused={true}
+                onTouchTap={() => { this.handleOpenDialog() }}
+            />
+        ];
+    } else if (this.state.newProjectDialog.projectName === ''){
+        this.state.newProjectDialog.errorText = 'this field is required!';
+        actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.handleCloseDialog}
+            />, <FlatButton
+                label="Add"
+                disabled={true}
+                primary={true}
+                keyboardFocused={true}
+                onTouchTap={() => { this.handleOpenDialog() }}
+            />
+        ];
+    }else{
+        this.state.newProjectDialog.errorText = ''
+        actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.handleCloseDialog}
+            />, <FlatButton
+                label="Add"
+                primary={true}
+                keyboardFocused={true}
+                onTouchTap={() => { this.addProject(); this.handleCloseDialog(); }}
+            />
+        ];
+    }
+
+
 
     return <MuiThemeProvider muiTheme={muiTheme}>
           <Router>
@@ -235,7 +318,7 @@ export default class App extends React.Component {
               <Drawer open={this.state.drawer.open}
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
-              <MenuHeader project={this.props.project.projectName}/>
+                  <MenuHeader project={this.props.project.projectName}/>
                   <List>
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
@@ -255,6 +338,14 @@ export default class App extends React.Component {
                   ))}
                   </List>
               </Drawer>
+                <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
+                    <AppBar
+                        title={<span style={styles.title}>Title</span>}
+                        iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+                        iconElementRight={<FlatButton label="Save" />}
+                    />
+                    <ProjectHeaderRight project={this.props.project.projectName}/>
+                </Drawer>
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
                       <Route exact={route.exact}
@@ -271,14 +362,41 @@ export default class App extends React.Component {
                         modal={false}
                         open={this.state.dialogOpen}
                         onRequestClose={this.handleCloseDialog}>
-                        Create a new Project!
-                        <form>
-                        <input type="text"
-                               placeholder="Enter project name"
-                               value={this.state.newProjectDialog.input}
-                               style={styles.flatButton}
-                               onChange={this.handleChange}
-                        /></form>
+                        <Table height='200px'
+                        selectable={false}><TableBody
+                            displayRowCheckbox={false}><TableRow displayBorder={false}>
+                            <TableRowColumn>
+                                <InputField
+                                   hintText="Enter the name of your project."
+                                   value={this.state.newProjectDialog.projectName}
+                                   id="projectName"
+                                   floatingLabelText="Project name"
+                                   onChange={this.handleChange}
+                                   errorText={this.state.newProjectDialog.errorText}/>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <InputField
+                                  hintText="Describe the topic and content of your project."
+                                  value={this.state.newProjectDialog.projectDescription}
+                                  id="projectDescription"
+                                  multiLine={true}
+                                  floatingLabelText="Project description"
+                                  onChange={this.handleChange}/>
+                            </TableRowColumn></TableRow>
+                            <TableRow><TableRowColumn>
+                                <InputField
+                                  hintText="The author(s) of this project."
+                                  value={this.state.newProjectDialog.projectAuthor}
+                                  id="projectAuthor"
+                                  floatingLabelText="Project author(s)"
+                                  onChange={this.handleChange}/>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <DatePicker
+                                    hintText="Date of creation."
+                                    value={this.state.newProjectDialog.projectDate !== ''? new Date(this.state.newProjectDialog.projectDate) : null}
+                                    onChange={this.handleDateChange}/>
+                            </TableRowColumn></TableRow></TableBody></Table>
                     </Dialog>
                 </div>
             </div>

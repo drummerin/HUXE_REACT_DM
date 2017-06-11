@@ -7,22 +7,25 @@ const styles = {
     padding: 10,
     boxSizing: 'border-box',
     textAlign: 'center',
-    color: '#FF0000',
   },
   img: {
-    width: 200,
-    backgroundColor: '#FF0000',
+    width: 100,
   },
 };
 
 // dynamisch je nach ausgewähltem sender :)
- const MenuHeader = ({ project }) => (
+/* const MenuHeader = ({ station }) => (
     <div style={styles.element}>
-        <img style={styles.img} src={`./assets/logo.png`}/>
+        <img style={styles.img} src={`/logos/${station}-128-round.png`}/>
+    </div>
+);*/
+
+const MenuHeader = ({ project }) => (
+    <div style={styles.element}>
+      <p>{project}</p>
+      <hr/>
     </div>
 );
-
-
 
 MenuHeader.propTypes = {
   project: PropTypes.string.isRequired,
