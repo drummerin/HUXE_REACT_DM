@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import transitions from 'material-ui/styles/transitions';
 import ProjectsIcon from 'material-ui/svg-icons/av/library-books';
 import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
@@ -18,12 +17,14 @@ import ChatIcon from 'material-ui/svg-icons/communication/chat';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import Dialog from 'material-ui/Dialog';
 import DatePicker from 'material-ui/DatePicker';
+import Calendar from 'material-ui/DatePicker/Calendar';
 import InputField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -34,7 +35,6 @@ import {
 } from 'material-ui/Table';
 
 import { List, ListItem } from 'material-ui/List';
-
 import Projects from './routes/Projects';
 import Components from './routes/Components';
 import Settings from './routes/Settings';
@@ -42,7 +42,7 @@ import Chat from './routes/Chat.jsx';
 import About from './routes/About';
 import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
-import { setProject as setProjectAction, addProject as addProjectAction } from './actions';
+import { setProject as setProjectAction, addProject as addProjectAction, deleteProject as deleteProjectAction } from './actions';
 import projects from './projects';
 
 const colorSelected = '#3189a6';
@@ -65,11 +65,6 @@ const styles = {
   },
 };
 
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: '#2f6fff',
-  },
-});
 
 const routes = [
   {
@@ -144,7 +139,7 @@ export default class App extends React.Component {
   buildProjectList(dataSnapshot) {
     if (projects.length > 0) {
       // this.state.projectList.splice(0, this.state.projectList.length);
-      projects.splice(2, projects.length);
+      projects.splice(2, projects.length - 2);
     }
     dataSnapshot.forEach((childSnapshot) => {
             // childData will be the actual contents of the child
@@ -193,6 +188,11 @@ export default class App extends React.Component {
   handleCloseDialog = () => {
     this.setState({ dialogOpen: false });
   };
+
+  handleTouchTapDay (event, date) {
+    console.log("date: " + date + event);
+  };
+
   addProject() {
     firebase.database().ref('projects').push({
       projectName: this.state.newProjectDialog.projectName,
@@ -204,19 +204,31 @@ export default class App extends React.Component {
     if (project) {
       this.props.dispatch(addProjectAction(project));
     }
-    this.state.newProjectDialog = {
+    this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',
       projectAuthors: '',
       projectDate: null,
       projectColor: '#FF0000',
-    };
+    },
+    });
   }
   setProject(name) {
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(setProjectAction(project));
     }
+  }
+
+  deleteProject(name) {
+    console.log(name);
+    console.log(`delete!${projects.length}`);
+    const project = projects.find(loopProject => loopProject.projectName === name.projectName);
+    if (project) {
+      console.log('delete');
+      this.props.dispatch(deleteProjectAction(project));
+    }
+    console.log(`delete!${projects.length}`);
   }
 
   handleChange = (event) => {
@@ -353,10 +365,12 @@ export default class App extends React.Component {
                 <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
                     <AppBar
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-                        iconElementRight={<FlatButton label="Delete"/>}
+                        iconElementRight={<IconButton><DeleteIcon /></IconButton>}
                         onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
+                        onRightIconButtonTouchTap={() => this.deleteProject(this.props.project)}
                     />
                     <ProjectHeaderRight project={this.props.project.projectName}/>
+                    <Calendar firstDayOfWeek={1} onTouchTapDay={this.handleTouchTapDay}/>
                 </Drawer>
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (

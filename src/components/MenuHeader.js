@@ -15,17 +15,17 @@ const styles = {
 };
 
 export default class MenuHeader extends React.Component {
-    constructor(props){
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    static propTypes = {
-        project: PropTypes.object.isRequired,
-    };
+  static propTypes = {
+    project: PropTypes.object.isRequired,
+  };
 
-    render() {
-        return <div style={styles.element}>
-            <img style={{width: 150, backgroundColor: this.props.project.projectColor}} src={`./assets/logo.png`}/>
+  render() {
+    return <div style={styles.element}>
+            <img style={{ width: 150, backgroundColor: this.props.project.projectColor }} src={'./assets/logo.png'}/>
         </div>;
-    }
+  }
 }
