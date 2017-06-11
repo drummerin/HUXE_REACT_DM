@@ -1,12 +1,10 @@
 export default [
   {
     projectName: 'Meeting 1.6.2017',
-    color: '#FFDF00',
-    dark: true,
+    projectColor: '#00626b',
   },
   {
     projectName: 'MasterThesis',
-    color: '#D80926',
-    dark: false,
+    projectColor: '#d87600',
   },
 ];

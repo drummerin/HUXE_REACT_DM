@@ -18,6 +18,7 @@ import ChatIcon from 'material-ui/svg-icons/communication/chat';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info';
+import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -45,7 +46,6 @@ import { setProject as setProjectAction, addProject as addProjectAction } from '
 import projects from './projects';
 
 const colorSelected = '#3189a6';
-
 const styles = {
   htmlStyles: {
     backgroundColor: '#d8d8d8',
@@ -100,6 +100,7 @@ const routes = [
 
 @connect(store => ({
   project: store.project,
+  theme: store.theme,
 }))
 
 export default class App extends React.Component {
@@ -112,14 +113,14 @@ export default class App extends React.Component {
       },
       drawerRight: {
         open: true,
-        },
+      },
       dialogOpen: false,
       newProjectDialog: {
         projectName: '',
         projectDescription: '',
         projectAuthor: '',
         projectDate: '',
-        projectColor: '',
+        projectColor: '#FF0000',
         errorText: 'This field is required!',
       },
     };
@@ -130,6 +131,7 @@ export default class App extends React.Component {
 
   static propTypes = {
     project: PropTypes.object,
+    theme: PropTypes.object,
     dispatch: PropTypes.func,
   };
 
@@ -168,15 +170,24 @@ export default class App extends React.Component {
       },
     });
   }
+  toggleDrawerRight() {
+    this.setState({
+      drawerRight: {
+        ...this.state.drawerRight,
+        open: !this.state.drawerRight.open,
+      },
+    });
+  }
 
   closeDrawer() {
-    if (!this.state.sidebarDocked) {
-      this.toggleDrawer();
-    }
+    this.toggleDrawer();
+  }
+  closeDrawerRight() {
+    this.toggleDrawerRight();
   }
 
   handleOpenDialog = () => {
-    this.setState({ dialogOpen: true});
+    this.setState({ dialogOpen: true });
   };
 
   handleCloseDialog = () => {
@@ -188,18 +199,18 @@ export default class App extends React.Component {
       projectDescription: this.state.newProjectDialog.projectDescription,
       projectAuthors: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
-      projectColor: this.state.newProjectDialog.projectColor});
+      projectColor: this.state.newProjectDialog.projectColor });
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(addProjectAction(project));
     }
-    this.state.newProjectDialog =  {
+    this.state.newProjectDialog = {
       projectName: '',
       projectDescription: '',
       projectAuthors: '',
       projectDate: null,
-      projectColor: '',
-      }
+      projectColor: '#FF0000',
+    };
   }
   setProject(name) {
     const project = projects.find(loopProject => loopProject === name);
@@ -210,20 +221,20 @@ export default class App extends React.Component {
 
   handleChange = (event) => {
     this.setState({
-        newProjectDialog: {
-            ...this.state.newProjectDialog,
-            [event.target.id]: event.target.value,
-        },
+      newProjectDialog: {
+        ...this.state.newProjectDialog,
+        [event.target.id]: event.target.value,
+      },
     });
   };
-    handleDateChange = (event, date) => {
-        this.setState({
-            newProjectDialog: {
-                ...this.state.newProjectDialog,
-                projectDate: date.toString(),
-            },
-        });
-    };
+  handleDateChange = (event, date) => {
+    this.setState({
+      newProjectDialog: {
+        ...this.state.newProjectDialog,
+        projectDate: date.toString(),
+      },
+    });
+  };
 
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
@@ -236,13 +247,13 @@ export default class App extends React.Component {
             <ListItem
                 key={project.projectName}
                 primaryText={project.projectName}
-                leftIcon={<EditIcon color={colorSelected}/>}
-                style={styles.selectedProject}
+                leftIcon={<EditIcon color={project.projectColor}/>}
+                style={{ color: project.projectColor }}
                 onTouchTap={() => { this.closeDrawer(); this.setProject(project); }}/> :
             <ListItem
                 key={project.projectName}
                 primaryText={project.projectName}
-                leftIcon={<ProjectsIcon/>}
+                leftIcon={<ProjectsIcon color={project.projectColor}/>}
                 onTouchTap={() => { this.closeDrawer(); this.setProject(project); }}/>
     ));
     renderedProjectList.push(<ListItem
@@ -253,17 +264,17 @@ export default class App extends React.Component {
 
     let projectAlreadyExists = false;
     projects.forEach((project) => {
-    if(project.projectName === this.state.newProjectDialog.projectName){
-        console.log("jumps into checking TRUE")
+      if (project.projectName === this.state.newProjectDialog.projectName) {
+        console.log('jumps into checking TRUE');
         projectAlreadyExists = true;
-    }
+      }
     });
 
     let actions;
-    if(projectAlreadyExists){
-        this.state.newProjectDialog.errorText = 'this project already exists!';
-        actions = [
-            <FlatButton
+    if (projectAlreadyExists) {
+      this.state.newProjectDialog.errorText = 'this project already exists!';
+      actions = [
+        <FlatButton
                 label="Cancel"
                 primary={true}
                 onTouchTap={this.handleCloseDialog}
@@ -272,13 +283,13 @@ export default class App extends React.Component {
                 disabled={true}
                 primary={true}
                 keyboardFocused={true}
-                onTouchTap={() => { this.handleOpenDialog() }}
-            />
-        ];
-    } else if (this.state.newProjectDialog.projectName === ''){
-        this.state.newProjectDialog.errorText = 'this field is required!';
-        actions = [
-            <FlatButton
+                onTouchTap={() => { this.handleOpenDialog(); }}
+            />,
+      ];
+    } else if (this.state.newProjectDialog.projectName === '') {
+      this.state.newProjectDialog.errorText = 'this field is required!';
+      actions = [
+        <FlatButton
                 label="Cancel"
                 primary={true}
                 onTouchTap={this.handleCloseDialog}
@@ -287,13 +298,13 @@ export default class App extends React.Component {
                 disabled={true}
                 primary={true}
                 keyboardFocused={true}
-                onTouchTap={() => { this.handleOpenDialog() }}
-            />
-        ];
-    }else{
-        this.state.newProjectDialog.errorText = ''
-        actions = [
-            <FlatButton
+                onTouchTap={() => { this.handleOpenDialog(); }}
+            />,
+      ];
+    } else {
+      this.state.newProjectDialog.errorText = '';
+      actions = [
+        <FlatButton
                 label="Cancel"
                 primary={true}
                 onTouchTap={this.handleCloseDialog}
@@ -302,23 +313,24 @@ export default class App extends React.Component {
                 primary={true}
                 keyboardFocused={true}
                 onTouchTap={() => { this.addProject(); this.handleCloseDialog(); }}
-            />
-        ];
+            />,
+      ];
     }
 
 
-
-    return <MuiThemeProvider muiTheme={muiTheme}>
+    return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
             <div>
               <AppBar title={this.state.project}
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
+                      iconElementRight={<IconButton><InfoOutlineIcon/></IconButton>}
+                      onRightIconButtonTouchTap={() => this.toggleDrawerRight()}
                       style={{ paddingLeft }}/>
               <Drawer open={this.state.drawer.open}
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
-                  <MenuHeader project={this.props.project.projectName}/>
+                  <MenuHeader project={this.props.project}/>
                   <List>
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
@@ -340,9 +352,9 @@ export default class App extends React.Component {
               </Drawer>
                 <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
                     <AppBar
-                        title={<span style={styles.title}>Title</span>}
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-                        iconElementRight={<FlatButton label="Save" />}
+                        iconElementRight={<FlatButton label="Delete"/>}
+                        onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
                     />
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                 </Drawer>
@@ -394,7 +406,7 @@ export default class App extends React.Component {
                             <TableRowColumn>
                                 <DatePicker
                                     hintText="Date of creation."
-                                    value={this.state.newProjectDialog.projectDate !== ''? new Date(this.state.newProjectDialog.projectDate) : null}
+                                    value={this.state.newProjectDialog.projectDate !== '' ? new Date(this.state.newProjectDialog.projectDate) : null}
                                     onChange={this.handleDateChange}/>
                             </TableRowColumn></TableRow></TableBody></Table>
                     </Dialog>
