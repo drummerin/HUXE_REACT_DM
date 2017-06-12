@@ -140,6 +140,7 @@ export default class App extends React.Component {
   }
 
   buildProjectList(dataSnapshot) {
+    let array = [];
     if (projects.length > 0) {
       // this.state.projectList.splice(0, this.state.projectList.length);
       projects.splice(2, projects.length - 2);
@@ -147,16 +148,21 @@ export default class App extends React.Component {
     dataSnapshot.forEach((childSnapshot) => {
             // childData will be the actual contents of the child
       const childData = childSnapshot.val();
-      console.log(`childData name ${childData.projectName}`);
-      console.log(`childData ${childData}`);
+      // console.log(`childData name ${childData.projectName}`);
+      // console.log(`childData ${childData}`);
       // if (this.state.projectList.indexOf(childData) === -1) {
       if (projects.indexOf(childData) === -1) {
-        console.log('not contained');
+        // console.log('not contained');
+        console.log(childData.components);
+
+        array = Object.keys(childData.components).map(key => childData.components[key]);
+        childData.components = array;
         projects.push(childData);
-        console.log(`proj file length${projects.length}`);
+        console.log(array);
+        console.log(projects);
       }
     });
-    console.log(`projectList ${projects}`);
+    // console.log(`projectList ${projects}`);
     this.setState(this.state);
   }
 
@@ -210,6 +216,9 @@ export default class App extends React.Component {
       projectAuthor: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
       projectColor: this.state.newProjectDialog.projectColor });
+    firebase.database().ref(`projects/${this.state.newProjectDialog.projectName}/components/todo-list`).set({
+      componentName: 'Todo List',
+      componentType: 'Todo' });
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',

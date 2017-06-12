@@ -74,11 +74,6 @@ export default class Projects extends React.Component {
       },
     };
     this.handleChange = this.handleChange.bind(this);
-    this.buildProjectList = this.buildProjectList.bind(this);
-  }
-  componentWillMount() {
-    // firebase.database().ref('value').on('value', this.buildProjectList);
-    // console.log('component mounts');;
   }
 
   handleOpenDialog = () => {
@@ -142,27 +137,6 @@ export default class Projects extends React.Component {
     }
   };
 
-  buildProjectList(dataSnapshot) {
-    dataSnapshot.forEach((childSnapshot) => {
-              // childData will be the actual contents of the child
-      const childData = childSnapshot.val();
-      console.log(`childData ${childData}`);
-      if (this.state.projectList.indexOf(childData) === -1) {
-        console.log('not contained');
-        // wieso fuegst du die der Datei hinzu?
-        projects.push({
-          name: childData,
-          color: '#D80926',
-          dark: false,
-        });
-        this.state.projectList.push(childData);
-        // ... ?
-      }
-    });
-
-    console.log(`projectList ${this.state.projectList}`);
-    this.setState(this.state);
-  }
 
   static propTypes = {
     project: PropTypes.object,
@@ -215,6 +189,11 @@ export default class Projects extends React.Component {
 
     return <div>
                 <Todo project={this.props.project} name="Test"/>
+        {this.props.project.components.map((component, i) => (
+            <Todo key={i}
+                  project={this.props.project}
+                  name={component.componentName}/>
+        ))}
       <div><FloatingActionButton mini={true} style={styles.addButton}
                                  backgroundColor={this.props.project.projectColor}
                                  onTouchTap={() => this.handleOpenDialog()}>
