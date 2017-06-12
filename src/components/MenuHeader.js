@@ -15,9 +15,6 @@ const styles = {
 };
 
 export default class MenuHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   static propTypes = {
     project: PropTypes.object.isRequired,

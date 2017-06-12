@@ -42,7 +42,7 @@ import Chat from './routes/Chat.jsx';
 import About from './routes/About';
 import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
-import { setProject as setProjectAction, addProject as addProjectAction, deleteProject as deleteProjectAction } from './actions';
+import { setProject as setProjectAction, addProject as addProjectAction } from './actions';
 import projects from './projects';
 
 const colorSelected = '#3189a6';
@@ -110,6 +110,7 @@ export default class App extends React.Component {
         open: true,
       },
       dialogOpen: false,
+      dialogDeleteOpen: false,
       newProjectDialog: {
         projectName: '',
         projectDescription: '',
@@ -117,11 +118,13 @@ export default class App extends React.Component {
         projectDate: '',
         projectColor: '#FF0000',
         errorText: 'This field is required!',
+        projectAlreadyExists: false,
       },
     };
     this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleTouchTapDay = this.handleTouchTapDay.bind(this);
   }
 
   static propTypes = {
@@ -189,15 +192,22 @@ export default class App extends React.Component {
     this.setState({ dialogOpen: false });
   };
 
-  handleTouchTapDay (event, date) {
-    console.log("date: " + date + event);
+  handleDeleteDialogOpen = () => {
+    this.setState({ dialogDeleteOpen: true });
   };
+  handleDeleteDialogClose = () => {
+    this.setState({ dialogDeleteOpen: false });
+  };
+
+  handleTouchTapDay(event, date) {
+    console.log(`date: ${date}${event}`);
+  }
 
   addProject() {
     firebase.database().ref('projects').push({
       projectName: this.state.newProjectDialog.projectName,
       projectDescription: this.state.newProjectDialog.projectDescription,
-      projectAuthors: this.state.newProjectDialog.projectAuthor,
+      projectAuthor: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
       projectColor: this.state.newProjectDialog.projectColor });
     const project = projects.find(loopProject => loopProject === name);
@@ -207,8 +217,8 @@ export default class App extends React.Component {
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',
-      projectAuthors: '',
-      projectDate: null,
+      projectAuthor: '',
+      projectDate: '',
       projectColor: '#FF0000',
     },
     });
@@ -220,24 +230,61 @@ export default class App extends React.Component {
     }
   }
 
-  deleteProject(name) {
-    console.log(name);
+  deleteProject(project) {
+    console.log(project);
     console.log(`delete!${projects.length}`);
-    const project = projects.find(loopProject => loopProject.projectName === name.projectName);
-    if (project) {
-      console.log('delete');
-      this.props.dispatch(deleteProjectAction(project));
-    }
+    // const project = projects.find(loopProject => loopProject.projectName === name.projectName);
+    // if (project) {
+    console.log('delete');
+    firebase.database().ref('projects').on('value', (projectList) => {
+      projectList.forEach((childSnapshot) => {
+        const childData = childSnapshot.val();
+        console.log(`..${childData.projectName} .. ${project.projectName}`);
+        if (childData.projectName === project.projectName) {
+          console.log('deleted???');
+          childSnapshot.ref.remove();
+        }
+      });
+    });
+    // }
+
+    this.props.dispatch(setProjectAction(projects[0]));
+
     console.log(`delete!${projects.length}`);
   }
 
-  handleChange = (event) => {
+  handleChange = (event, newValue) => {
     this.setState({
       newProjectDialog: {
         ...this.state.newProjectDialog,
         [event.target.id]: event.target.value,
+        projectAlreadyExists: false,
+        errorText: '',
       },
     });
+    projects.forEach((project) => {
+      if (project.projectName === newValue) {
+        console.log('jumps into checking TRUE');
+        this.setState({
+          newProjectDialog: {
+            ...this.state.newProjectDialog,
+            [event.target.id]: event.target.value,
+            projectAlreadyExists: true,
+            errorText: 'this project already exists!',
+          },
+        });
+      }
+    });
+    if (newValue === '') {
+      this.setState({
+        newProjectDialog: {
+          ...this.state.newProjectDialog,
+          [event.target.id]: event.target.value,
+          projectAlreadyExists: true,
+          errorText: 'this field is required!',
+        },
+      });
+    }
   };
   handleDateChange = (event, date) => {
     this.setState({
@@ -274,32 +321,9 @@ export default class App extends React.Component {
         leftIcon={<NewProjectIcon/>}
         onTouchTap={() => this.handleOpenDialog() }/>);
 
-    let projectAlreadyExists = false;
-    projects.forEach((project) => {
-      if (project.projectName === this.state.newProjectDialog.projectName) {
-        console.log('jumps into checking TRUE');
-        projectAlreadyExists = true;
-      }
-    });
 
     let actions;
-    if (projectAlreadyExists) {
-      this.state.newProjectDialog.errorText = 'this project already exists!';
-      actions = [
-        <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleCloseDialog}
-            />, <FlatButton
-                label="Add"
-                disabled={true}
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={() => { this.handleOpenDialog(); }}
-            />,
-      ];
-    } else if (this.state.newProjectDialog.projectName === '') {
-      this.state.newProjectDialog.errorText = 'this field is required!';
+    if (this.state.newProjectDialog.projectAlreadyExists) {
       actions = [
         <FlatButton
                 label="Cancel"
@@ -314,7 +338,6 @@ export default class App extends React.Component {
             />,
       ];
     } else {
-      this.state.newProjectDialog.errorText = '';
       actions = [
         <FlatButton
                 label="Cancel"
@@ -328,6 +351,23 @@ export default class App extends React.Component {
             />,
       ];
     }
+
+    const deleteActions = [
+      <FlatButton
+              label="Cancel"
+              primary={true}
+              onTouchTap={this.handleDeleteDialogClose}
+          />,
+      <FlatButton
+              label="Delete"
+              primary={true}
+              keyboardFocused={true}
+              onTouchTap={() => {
+                this.deleteProject(this.props.project);
+                this.handleDeleteDialogClose();
+              }}
+          />,
+    ];
 
 
     return <MuiThemeProvider muiTheme={this.props.theme}>
@@ -367,7 +407,7 @@ export default class App extends React.Component {
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                         iconElementRight={<IconButton><DeleteIcon /></IconButton>}
                         onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
-                        onRightIconButtonTouchTap={() => this.deleteProject(this.props.project)}
+                        onRightIconButtonTouchTap={() => this.handleDeleteDialogOpen()}
                     />
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                     <Calendar firstDayOfWeek={1} onTouchTapDay={this.handleTouchTapDay}/>
@@ -423,6 +463,14 @@ export default class App extends React.Component {
                                     value={this.state.newProjectDialog.projectDate !== '' ? new Date(this.state.newProjectDialog.projectDate) : null}
                                     onChange={this.handleDateChange}/>
                             </TableRowColumn></TableRow></TableBody></Table>
+                    </Dialog>
+                    <Dialog
+                        title="Delete project"
+                        actions={deleteActions}
+                        modal={false}
+                        open={this.state.dialogDeleteOpen}
+                        onRequestClose={this.handleClose}>
+                        Are you sure that you want to delete this project?
                     </Dialog>
                 </div>
             </div>
