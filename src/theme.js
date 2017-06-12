@@ -20,7 +20,7 @@ export function getTheme(projectName) {
       accent2Color: grey100,
       accent3Color: darkBlack,
       textColor: darkBlack,
-      secondaryTextColor: (0, fade)(fullWhite, 0.7),
+      secondaryTextColor: (0, fade)(darkBlack, 0.7),
       alternateTextColor: fullWhite,
       canvasColor: fullWhite,
       clockCircleColor: (0, fade)(fullWhite, 0.12),
