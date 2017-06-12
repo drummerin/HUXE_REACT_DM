@@ -204,16 +204,12 @@ export default class App extends React.Component {
   }
 
   addProject() {
-    firebase.database().ref('projects').push({
+    firebase.database().ref(`projects/${this.state.newProjectDialog.projectName}`).set({
       projectName: this.state.newProjectDialog.projectName,
       projectDescription: this.state.newProjectDialog.projectDescription,
       projectAuthor: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
       projectColor: this.state.newProjectDialog.projectColor });
-    const project = projects.find(loopProject => loopProject === name);
-    if (project) {
-      this.props.dispatch(addProjectAction(project));
-    }
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',

@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
+import InputField from 'material-ui/TextField';
 import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import OKButton from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
+
 import projects from '../projects';
 
 const styles = {
@@ -34,10 +35,7 @@ const styles = {
     marginTop: '-20px',
     width: '195px',
   },
-  Okbutton: {
-    top: '35px',
-    padding: '0',
-  },
+
 };
 
 @connect(store => ({
@@ -114,7 +112,7 @@ export default class Projects extends React.Component {
                 />
             </List>
             <div style={styles.paperBottom}><hr/>
-            <TextField style={styles.input}
+            <InputField style={styles.input}
                        floatingLabelText="add todo"
                        id="todo"
                        multiLine={true}
@@ -122,9 +120,8 @@ export default class Projects extends React.Component {
                        onChange={this.handleChange}
             /><IconButton style={styles.Okbutton}><OKButton /></IconButton>
             </div>
-
         </Paper>
-        </div>;
+      </div>;
   }
 
 }
