@@ -8,7 +8,7 @@ import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import OKButton from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
-
+import { updateProject as updateProjectAction } from '../actions';
 import projects from '../projects';
 
 const styles = {
@@ -41,7 +41,6 @@ const styles = {
 
 @connect(store => ({
   project: store.project,
-  component: store.component,
 }))
 
 
@@ -54,39 +53,13 @@ export default class Projects extends React.Component {
       todo: '',
     };
     this.handleChange = this.handleChange.bind(this);
-    this.buildProjectList = this.buildProjectList.bind(this);
-  }
-  componentWillMount() {
-        // firebase.database().ref('value').on('value', this.buildProjectList);
-        // console.log('component mounts');;
   }
 
-  buildProjectList(dataSnapshot) {
-    dataSnapshot.forEach((childSnapshot) => {
-            // childData will be the actual contents of the child
-      const childData = childSnapshot.val();
-      console.log(`childData ${childData}`);
-      if (this.state.projectList.indexOf(childData) === -1) {
-        console.log('not contained');
-                // wieso fuegst du die der Datei hinzu?
-        projects.push({
-          name: childData,
-          color: '#D80926',
-          dark: false,
-        });
-        this.state.projectList.push(childData);
-                // ... ?
-      }
-    });
-
-    console.log(`projectList ${this.state.projectList}`);
-    this.setState(this.state);
-  }
 
   static propTypes = {
     project: PropTypes.object,
     dispatch: PropTypes.func,
-    component: PropTypes.string,
+    component: PropTypes.object,
   };
 
   handleChange(event) {
@@ -95,9 +68,15 @@ export default class Projects extends React.Component {
   }
 
   addTodoItem() {
-    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component}/content`).push({
+    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos`).push({
       todo: this.state.todo,
       checked: false });
+    this.setState({ todo: '' });
+    this.updateProjectAction(this.props.project);
+  }
+
+  updateProjectAction(project) {
+    this.props.dispatch(updateProjectAction(project));
   }
 
   onCheckHandler(event, checked) {
@@ -106,22 +85,33 @@ export default class Projects extends React.Component {
 
 
   render() {
+    console.log(this.props.component.todos);
+    let todoList;
+    if (this.props.component.todos != null) {
+      const todoarray = Object.keys(this.props.component.todos).map(key =>
+          this.props.component.todos[key]);
+      console.log(todoarray);
+      todoList = todoarray.map((todo, i) => (
+          <ListItem key={i}
+                    style={styles.listItem}
+                    leftCheckbox={<Checkbox style={styles.checkbox} onCheck={this.onCheckHandler}/>}
+                    primaryText={todo.todo}
+          />
+      ));
+
+      console.log(todoList);
+      console.log(this.props.component);
+    }
+
     return <div>
-        <Paper style={styles.paper}><div style={styles.paperHeader}>To-do List<hr/></div>
+        <Paper style={styles.paper}><div style={styles.paperHeader}>
+            {this.props.component.componentName}<hr/></div>
             <List>
+                {todoList}
                 <ListItem style={styles.listItem}
                     leftCheckbox={<Checkbox style={styles.checkbox} onCheck={this.onCheckHandler}/>}
                     primaryText="Notifications"
                     secondaryText="Allow notifications"
-                />
-                <ListItem style={styles.listItem}
-                    leftCheckbox={<Checkbox style={styles.checkbox}/>}
-                    primaryText="Sounds"
-                />
-                <ListItem style={styles.listItem}
-                    leftCheckbox={<Checkbox style={styles.checkbox}/>}
-                    primaryText="Video sounds"
-                    secondaryText="Hangouts video call"
                 />
             </List>
             <div style={styles.paperBottom}><hr/>

@@ -146,7 +146,8 @@ export default class Projects extends React.Component {
   addComponent() {
     firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
       componentName: this.state.newComponentDialog.componentName,
-      componentType: this.state.newComponentDialog.selectedComponent });
+      componentType: this.state.newComponentDialog.selectedComponent,
+      todos: '' });
 
     this.setState({ newComponentDialog: {
       componentName: '',
@@ -199,17 +200,15 @@ export default class Projects extends React.Component {
     let components;
     if (this.props.project.components != null) {
       components = this.props.project.components.map((component, i) => (
-
           <Todo key={i}
                 project={this.props.project}
-                component={component.componentName}
+                component={component}
                 name={component.componentName}/>
       ));
     }
 
 
     return <div>
-                <Todo project={this.props.project} name="Test"/>
         {components}
       <div><FloatingActionButton mini={true} style={styles.addButton}
                                  backgroundColor={this.props.project.projectColor}

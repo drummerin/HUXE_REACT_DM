@@ -207,7 +207,8 @@ export default class App extends React.Component {
       projectColor: this.state.newProjectDialog.projectColor });
     firebase.database().ref(`projects/${this.state.newProjectDialog.projectName}/components/todo-list`).set({
       componentName: 'Todo List',
-      componentType: 'Todo' });
+      componentType: 'Todo',
+      todos: '' });
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',
