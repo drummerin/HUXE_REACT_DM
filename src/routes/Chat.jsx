@@ -12,6 +12,7 @@ import { on, off, send } from '../ws';
 const styles = {
   container: {
     padding: 10,
+    maxWidth: 600,
   },
   message: {
     padding: 10,
