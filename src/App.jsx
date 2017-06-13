@@ -21,6 +21,8 @@ import Projects from './routes/Projects';
 import Components from './routes/Components';
 import Settings from './routes/Settings';
 import Chat from './routes/Chat.jsx';
+import Login from './routes/Login';
+import Signup from './routes/Signup';
 import About from './routes/About';
 import MenuHeader from './components/MenuHeader';
 
@@ -31,7 +33,7 @@ const styles = {
   },
   content: {
     padding: 16,
-    maxWidth: 1000,
+    // maxWidth: 1000,
     transition: transitions.easeOut(null, 'padding-left', null),
     color: '#2f6fff',
   },
@@ -43,6 +45,7 @@ const styles = {
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: '#2f6fff',
+    primary2Color: '#dedede',
   },
 });
 
@@ -77,6 +80,18 @@ const routes = [
     title: 'Chat',
     component: Chat,
     icon: <ChatIcon/>,
+  },
+  {
+    link: '/login',
+    title: 'Login',
+    component: Login,
+    icon: <InfoIcon/>,
+  },
+  {
+    link: '/signup',
+    title: 'Signup',
+    component: Signup,
+    icon: <InfoIcon/>,
   },
   /* {
     link: '/todo',
