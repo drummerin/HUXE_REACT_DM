@@ -6,10 +6,10 @@ import Paper from 'material-ui/Paper';
 import InputField from 'material-ui/TextField';
 import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
+import EditButton from 'material-ui/svg-icons/image/edit';
 import OKButton from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 import { updateProject as updateProjectAction } from '../actions';
-import projects from '../projects';
 
 const styles = {
   paper: {
@@ -17,14 +17,20 @@ const styles = {
     width: '300px',
     height: '300px',
     float: 'left',
-    overflow: 'auto',
   },
   paperHeader: {
+    top: '0',
     padding: '20px 20px 0 20px',
     textAlign: 'center',
   },
+  paperMiddle: {
+    padding: '0 20px 0 20px',
+    height: '160px',
+    overflow: 'auto',
+  },
   paperBottom: {
     padding: '0 20px 20px 20px',
+    height: '50px',
   },
   checkbox: {
     top: '6px',
@@ -34,8 +40,9 @@ const styles = {
   },
   input: {
     marginTop: '-20px',
-    width: '195px',
+    width: '196px',
   },
+
 
 };
 
@@ -50,7 +57,10 @@ export default class Projects extends React.Component {
     this.state = {
       todoTitle: '',
       todoList: [],
-      todo: '',
+      newTodo: '',
+      editTodo: '',
+      todoId: 0,
+      editingTodo: '',
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -64,25 +74,51 @@ export default class Projects extends React.Component {
 
   handleChange(event) {
     console.log(`input: ${event.target.value}`);
-    this.setState({ todo: event.target.value });
+    this.setState({ [event.target.id]: event.target.value });
   }
 
   addTodoItem() {
-    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos`).push({
-      todo: this.state.todo,
-      checked: false });
-    this.setState({ todo: '' });
-    this.updateProjectAction(this.props.project);
+    if (this.state.newTodo !== '') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${this.state.newTodo + this.state.todoId}`).set({
+        todo: this.state.newTodo,
+        checked: false,
+        id: this.state.newTodo + this.state.todoId });
+      const Id = +1;
+      this.setState({ newTodo: '', todoId: Id });
+      this.updateProjectAction(this.props.project);
+    }
   }
 
   updateProjectAction(project) {
     this.props.dispatch(updateProjectAction(project));
   }
 
-  onCheckHandler(event, checked) {
-    console.log(checked);
+  editTodo(todo, Id) {
+    this.setState({ editingTodo: todo });
   }
 
+  finishEditing(todo) {
+    if (this.state.editTodo !== '') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${todo.id}`).set({
+        todo: this.state.editTodo,
+        checked: todo.checked,
+        id: todo.id });
+    } else {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${todo.id}`).remove();
+    }
+    this.setState({ editingTodo: '', newTodo: '', editTodo: '' });
+    this.updateProjectAction(this.props.project);
+  }
+
+  handleCheck(id, checked) {
+    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${id.id}`).set({
+      todo: id.todo,
+      checked: !checked,
+      id: id.id });
+    console.log(`id: ${id.todo + id.id}`);
+    console.log(`checked: ${checked}`);
+    this.updateProjectAction(this.props.project);
+  }
 
   render() {
     console.log(this.props.component.todos);
@@ -94,32 +130,43 @@ export default class Projects extends React.Component {
       todoList = todoarray.map((todo, i) => (
           <ListItem key={i}
                     style={styles.listItem}
-                    leftCheckbox={<Checkbox style={styles.checkbox} onCheck={this.onCheckHandler}/>}
-                    primaryText={todo.todo}
+                    primaryText={(this.state.editingTodo === todo.todo) ?
+                        <InputField style={styles.input}
+                                   floatingLabelText="edit todo"
+                                   id="editTodo"
+                                   value={this.state.editTodo}
+                                   onChange={this.handleChange}/> :
+                        <span>{todo.todo}</span>}
+                    rightIconButton={
+                        (this.state.editingTodo !== todo.todo) ?
+                        <IconButton onTouchTap={() => this.editTodo(todo.todo, todo.todoId)}>
+                        <EditButton color={this.props.project.projectColor } /></IconButton> :
+                        <IconButton onTouchTap={() => this.finishEditing(todo)}>
+                        <OKButton color={this.props.project.projectColor } /> </IconButton>}
+
+                    leftCheckbox={
+                        <Checkbox style={styles.checkbox} key={todo.todo}
+                                  value={todo.checked}
+                                  checked={todo.checked}
+                                  onCheck={() => {
+                                    this.handleCheck(todo, todo.checked);
+                                    this.updateProjectAction(this.props.project);
+                                  }}/>}
           />
       ));
-
-      console.log(todoList);
-      console.log(this.props.component);
     }
 
     return <div>
         <Paper style={styles.paper}><div style={styles.paperHeader}>
             {this.props.component.componentName}<hr/></div>
-            <List>
+          <div style={styles.paperMiddle}><List>
                 {todoList}
-                <ListItem style={styles.listItem}
-                    leftCheckbox={<Checkbox style={styles.checkbox} onCheck={this.onCheckHandler}/>}
-                    primaryText="Notifications"
-                    secondaryText="Allow notifications"
-                />
-            </List>
+          </List></div>
             <div style={styles.paperBottom}><hr/>
             <InputField style={styles.input}
                        floatingLabelText="add todo"
-                       id="todo"
-                       multiLine={true}
-                       value={this.state.todo}
+                       id="newTodo"
+                       value={this.state.newTodo}
                        onChange={this.handleChange}/>
               <IconButton style={styles.Okbutton} onTouchTap={() => this.addTodoItem()}>
                 <OKButton /></IconButton>
@@ -127,6 +174,7 @@ export default class Projects extends React.Component {
         </Paper>
       </div>;
   }
+
 
 }
 

@@ -5,7 +5,6 @@ export default [
     components: [{
       componentName: 'compi',
       componentType: 'Todo',
-      todos: { a: 'b' },
     }, {
       componentName: 'compooo',
       componentType: 'Toduuu',
@@ -17,7 +16,6 @@ export default [
     components: [{
       componentName: 'compoo',
       componentType: 'Todo',
-      todos: { a: 'b' },
     }],
   },
 ];

@@ -34,13 +34,14 @@ fb.on('value', (snapshot) => {
   }
   snapshot.forEach((childSnapshot) => {
     const childData = childSnapshot.val();
-    if (projects.indexOf(childData) === -1) {
-      projects.push(childData);
-    }
     if (childData.components != null) {
       console.log('firebase data COMPONENT changed');
       array = Object.keys(childData.components).map(key => childData.components[key]);
       childData.components = array;
+      console.log(childData.components);
+    }
+    if (projects.indexOf(childData) === -1) {
+      projects.push(childData);
     }
   });
   ReactDOM.render(
