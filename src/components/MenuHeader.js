@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
 const styles = {
   element: {
     width: '100%',
@@ -9,26 +10,19 @@ const styles = {
     textAlign: 'center',
   },
   img: {
-    width: 100,
+    width: 200,
   },
 };
 
-// dynamisch je nach ausgewähltem sender :)
-/* const MenuHeader = ({ station }) => (
-    <div style={styles.element}>
-        <img style={styles.img} src={`/logos/${station}-128-round.png`}/>
-    </div>
-);*/
+export default class MenuHeader extends React.Component {
 
-const MenuHeader = ({ project }) => (
-    <div style={styles.element}>
-      <p>{project}</p>
-      <hr/>
-    </div>
-);
+  static propTypes = {
+    project: PropTypes.object.isRequired,
+  };
 
-MenuHeader.propTypes = {
-  project: PropTypes.string.isRequired,
-};
-
-export default MenuHeader;
+  render() {
+    return <div style={styles.element}>
+            <img style={{ width: 150, backgroundColor: this.props.project.projectColor }} src={'./assets/logo.png'}/>
+        </div>;
+  }
+}

@@ -1,9 +1,10 @@
 import projects from './projects';
-// import defaultTheme, { getTheme } from './theme';
+import defaultTheme, { getTheme } from './theme';
+
 
 export default function reducer(state = {
   project: { ...projects[0] },
-  // theme: defaultTheme,
+  theme: defaultTheme,
   /* settings: {
     dark: true,
   },
@@ -22,7 +23,7 @@ export default function reducer(state = {
         project: {
           ...action.payload,
         },
-              // theme: getTheme(action.payload.shortName, state.settings.dark),
+        theme: getTheme(action.payload.projectName),
       };
     }
     case 'ADD_PROJECT': {
@@ -31,7 +32,16 @@ export default function reducer(state = {
         project: {
           ...action.payload,
         },
-              // theme: getTheme(action.payload.shortName, state.settings.dark),
+        theme: getTheme(action.payload.projectName),
+      };
+    }
+    case 'DELETE_PROJECT': {
+      return {
+        ...state,
+        project: {
+          ...action.payload,
+        },
+        theme: getTheme(action.payload.projectName),
       };
     }
     case 'CHANGE_SETTINGS': {
@@ -41,7 +51,7 @@ export default function reducer(state = {
       };
       return {
         ...state,
-        // theme: getTheme(state.station.shortName, settings.dark),
+        theme: getTheme(state.project.projectName),
         settings,
       };
     }

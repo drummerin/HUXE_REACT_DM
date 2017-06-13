@@ -1,15 +1,23 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import FlatButton from 'material-ui/FlatButton';
-import ActionNew from 'material-ui/svg-icons/file/create-new-folder';
-import OKButton from 'material-ui/svg-icons/navigation/check';
-import Paper from 'material-ui/Paper';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import InputField from 'material-ui/TextField';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import {
+    Table,
+    TableBody,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import Dialog from 'material-ui/Dialog';
+
 import projects from '../projects';
-import { setProject as setProjectAction } from '../actions';
+import Todo from '../components/Todo';
 
 const styles = {
   container: {
@@ -27,7 +35,22 @@ const styles = {
   newProject: {
     display: 'inline-block',
   },
+  Okbutton: {
+    top: '35px',
+    padding: '0',
+  },
+  addButton: {
+    margin: '140px',
+  },
 };
+
+const items = [
+  <MenuItem key={1} value={'TODO'} primaryText="TODO" />,
+  <MenuItem key={2} value={'List'} primaryText="List" />,
+  <MenuItem key={3} value={3} primaryText="Weeknights" />,
+  <MenuItem key={4} value={4} primaryText="Weekends" />,
+  <MenuItem key={5} value={5} primaryText="Weekly" />,
+];
 
 @connect(store => ({
   project: store.project,
@@ -41,115 +64,174 @@ export default class Projects extends React.Component {
       inputActive: false,
       value: '',
       projectList: [],
+      dialogOpen: false,
+      newComponentDialog: {
+        componentName: '',
+        errorTextComponent: 'This field is required!',
+        errorTextComponentName: 'This field is required!',
+        componentAlreadyExists: false,
+        selectedComponent: '',
+      },
     };
-
-
-    // this.onButtonClick = this.onButtonClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.buildProjectList = this.buildProjectList.bind(this);
-    // this.componentWillMount = this.componentWillMount.bind(this);
-  }
-  componentWillMount() {
-    // const query = firebase.database().ref('value').orderByKey();
-    firebase.database().ref('value').on('value', this.buildProjectList);
-    console.log('component mounts');
-    // query.on('value', this.buildProjectList);
   }
 
-  buildProjectList(dataSnapshot) {
-    dataSnapshot.forEach((childSnapshot) => {
-              // childData will be the actual contents of the child
-      const childData = childSnapshot.val();
-      console.log(`childData ${childData}`);
-      if (this.state.projectList.indexOf(childData) === -1) {
-        console.log('not contained');
-        // wieso fuegst du die der Datei hinzu?
-        projects.push({
-          name: childData,
-          color: '#D80926',
-          dark: false,
+  handleOpenDialog = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleCloseDialog = () => {
+    this.setState({ dialogOpen: false });
+  };
+
+  handleChange = (event, newValue) => {
+    this.setState({
+      newComponentDialog: {
+        ...this.state.newComponentDialog,
+        [event.target.id]: event.target.value,
+        componentAlreadyExists: false,
+        errorTextComponentName: '',
+      },
+    });
+    projects.forEach((project) => {
+      if (project.projectName === newValue) {
+        console.log('jumps into checking TRUE');
+        this.setState({
+          newComponentDialog: {
+            ...this.state.newComponentDialog,
+            [event.target.id]: event.target.value,
+            componentAlreadyExists: true,
+            errorTextComponentName: 'this project already exists!',
+          },
         });
-        this.state.projectList.push(childData);
-        // ... ?
       }
     });
+    if (newValue === '') {
+      this.setState({
+        newComponentDialog: {
+          ...this.state.newComponentDialog,
+          [event.target.id]: event.target.value,
+          componentAlreadyExists: true,
+          errorTextComponentName: 'this field is required!',
+        },
+      });
+    }
+  };
 
-    console.log(`projectList ${this.state.projectList}`);
-    this.setState(this.state);
-  }
+  handleChangeComponent= (event, index, value) => {
+    this.setState({
+      newComponentDialog: {
+        ...this.state.newComponentDialog,
+        selectedComponent: value,
+        errorTextComponent: '',
+      },
+    });
+    if (value === '') {
+      this.setState({
+        newComponentDialog: {
+          ...this.state.newComponentDialog,
+          selectedComponent: value,
+          errorTextComponent: 'this field is required!',
+        },
+      });
+    }
+  };
+
 
   static propTypes = {
     project: PropTypes.object,
     dispatch: PropTypes.func,
   };
 
-  setProject(name) {
-    const project = projects.find(loopProject => loopProject.name === name);
-    if (project) {
-      this.props.dispatch(setProjectAction(project));
-    }
+  addComponent() {
+    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+      componentName: this.state.newComponentDialog.componentName,
+      componentType: this.state.newComponentDialog.selectedComponent });
+
+    this.setState({ newComponentDialog: {
+      componentName: '',
+      selectedComponent: '',
+    },
+    });
+    console.log('add comp clicked');
   }
 
-  onButtonClick() {
-    if (!this.state.inputActive) {
-      this.setState({
-        inputActive: true,
-      });
-    } else {
-      this.setState({
-        inputActive: false,
-      });
-    }
-  }
-
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  addProject() {
-    /* projects.push({
-      name: this.state.value,
-      color: '#D80926',
-      dark: false,
-    });*/
-    // console.log(this.props.project);
-    // console.log(projects.length);
-    firebase.database().ref('value').push(this.state.value);
-    // this.buildProjectList();
-    this.setState({ value: '' });
-  }
 
   render() {
-    console.log('render');
+    let actions;
+    if (this.state.newComponentDialog.componentAlreadyExists) {
+      actions = [
+        <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.handleCloseDialog}
+            />, <FlatButton
+                label="Add"
+                disabled={true}
+                primary={true}
+                keyboardFocused={true}
+            />,
+      ];
+    } else {
+      actions = [
+        <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.handleCloseDialog}
+            />, <FlatButton
+                label="Add"
+                primary={true}
+                keyboardFocused={true}
+                onTouchTap={() => { this.addComponent(); this.handleCloseDialog(); }}
+            />,
+      ];
+    }
+
     return <div>
-            <h1>{this.constructor.name}</h1>
-            <Paper style={styles.container}>
-                <RadioButtonGroup name="projects" valueSelected={this.props.project.name}
-                                  onChange={(e, value) => this.setProject(value)}>
+                <Todo project={this.props.project} name="Test"/>
+        {this.props.project.components.map((component, i) => (
+            <Todo key={i}
+                  project={this.props.project}
+                  name={component.componentName}/>
+        ))}
+      <div><FloatingActionButton mini={true} style={styles.addButton}
+                                 backgroundColor={this.props.project.projectColor}
+                                 onTouchTap={() => this.handleOpenDialog()}>
+        <ContentAdd />
+      </FloatingActionButton></div>
+      <div>
+        <Dialog style={styles.dialog}
+            title="Create a new TodoList"
+            actions={actions}
+            modal={false}
+            open={this.state.dialogOpen}
+            onRequestClose={this.handleCloseDialog}>
+          <Table height='200px'
+                 selectable={false}><TableBody
+              displayRowCheckbox={false}><TableRow displayBorder={false}>
+            <TableRowColumn>
+                <SelectField
+                    floatingLabelText="Component"
+                    value={this.state.newComponentDialog.selectedComponent}
+                    id="selectedComponent"
+                    onChange={this.handleChangeComponent}
+                    errorText={this.state.newComponentDialog.errorTextComponent}>{items}
+                </SelectField>
+            </TableRowColumn>
+          </TableRow>
+            <TableRow><TableRowColumn>
+                <InputField
+                    hintText="Enter the name of your component."
+                    value={this.state.newComponentDialog.componentName}
+                    id="componentName"
+                    floatingLabelText="Component name"
+                    onChange={this.handleChange}
+                    errorText={this.state.newComponentDialog.errorTextComponentName}/>
+            </TableRowColumn></TableRow></TableBody></Table>
+        </Dialog>
+      </div>
 
-                    { this.state.projectList.map(project => <RadioButton value={project}
-                                                          label={project}
-                                                           key={project}
-                                                          style={styles.radioButton}/>)}
-                </RadioButtonGroup>
-                <FlatButton onTouchTap={() => this.onButtonClick()}
-                            icon={<ActionNew/>}
-                            label="&nbsp; New Project"
-                            labelStyle={styles.addNewProjectButton}
-                />
-                {this.state.inputActive ? <div style={styles.newProject}>
-                        <input type="text"
-                        placeholder="Enter project name"
-                        value={this.state.value}
-                        style={styles.flatButton}
-                        onChange={this.handleChange}
-                        />
-                        <FlatButton onTouchTap={() => this.addProject()}
-                                    style={styles.flatButton}
-                                    icon={<OKButton/>}>
-                    </FlatButton></div> : <p></p>}
 
-            </Paper>
         </div>;
   }
 

@@ -1,12 +1,21 @@
 export default [
   {
-    name: 'Meeting 1.6.2017',
-    color: '#FFDF00',
-    dark: true,
+    projectName: 'Meeting 1.6.2017',
+    projectColor: '#00626b',
+    components: [{
+      componentName: 'compi',
+      componentType: 'Todo',
+    }, {
+      componentName: 'compooo',
+      componentType: 'Toduuu',
+    }],
   },
   {
-    name: 'MasterThesis',
-    color: '#D80926',
-    dark: false,
+    projectName: 'MasterThesis',
+    projectColor: '#d87600',
+    components: [{
+      componentName: 'compoo',
+      componentType: 'Todo',
+    }],
   },
 ];
