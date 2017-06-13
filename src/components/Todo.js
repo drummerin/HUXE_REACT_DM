@@ -8,6 +8,7 @@ import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import EditButton from 'material-ui/svg-icons/image/edit';
 import OKButton from 'material-ui/svg-icons/navigation/check';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import IconButton from 'material-ui/IconButton';
 import { updateProject as updateProjectAction } from '../actions';
 
@@ -19,13 +20,12 @@ const styles = {
     float: 'left',
   },
   paperHeader: {
-    top: '0',
-    padding: '20px 20px 0 20px',
+    padding: '15px 20px 0 20px',
     textAlign: 'center',
   },
   paperMiddle: {
-    padding: '0 20px 0 20px',
-    height: '160px',
+    padding: '0 20px 0 10px',
+    height: '170px',
     overflow: 'auto',
   },
   paperBottom: {
@@ -36,13 +36,29 @@ const styles = {
     top: '6px',
   },
   listItem: {
-    padding: '10px 10px 10px 55px',
+    padding: '10px 0px 10px 50px',
   },
   input: {
     marginTop: '-20px',
-    width: '196px',
+    width: '225px',
   },
-
+  inputTodo: {
+    height: '50px',
+    width: '150px',
+    marginTop: 0,
+  },
+  deleteButton: {
+    padding: '0 10px 0 0',
+    width: '25px',
+    height: '25px',
+    float: 'right',
+  },
+  button: {
+    padding: '10px 10px 0px 0px',
+    width: '25px',
+    height: '25px',
+    float: 'right',
+  },
 
 };
 
@@ -93,8 +109,9 @@ export default class Projects extends React.Component {
     this.props.dispatch(updateProjectAction(project));
   }
 
-  editTodo(todo, Id) {
-    this.setState({ editingTodo: todo });
+  editTodo(todo) {
+    console.log(todo.id);
+    this.setState({ editingTodo: todo.id });
   }
 
   finishEditing(todo) {
@@ -120,6 +137,11 @@ export default class Projects extends React.Component {
     this.updateProjectAction(this.props.project);
   }
 
+  deleteTodoList() {
+    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}`).remove();
+    this.updateProjectAction(this.props.project);
+  }
+
   render() {
     console.log(this.props.component.todos);
     let todoList;
@@ -130,16 +152,19 @@ export default class Projects extends React.Component {
       todoList = todoarray.map((todo, i) => (
           <ListItem key={i}
                     style={styles.listItem}
-                    primaryText={(this.state.editingTodo === todo.todo) ?
-                        <InputField style={styles.input}
-                                   floatingLabelText="edit todo"
+                    primaryText={(this.state.editingTodo === todo.id) ?
+                        <InputField style={styles.inputTodo}
+                                   floatingLabelStyle={{ marginTop: '-20px' }}
+                                   floatingLabelText={todo.todo}
+                                   inputStyle={{ height: '30px' }}
+                                   hintText="if empty, delete!"
                                    id="editTodo"
                                    value={this.state.editTodo}
                                    onChange={this.handleChange}/> :
                         <span>{todo.todo}</span>}
                     rightIconButton={
-                        (this.state.editingTodo !== todo.todo) ?
-                        <IconButton onTouchTap={() => this.editTodo(todo.todo, todo.todoId)}>
+                        (this.state.editingTodo !== todo.id) ?
+                        <IconButton onTouchTap={() => this.editTodo(todo)} style={{ marginRight: '-20px' }}>
                         <EditButton color={this.props.project.projectColor } /></IconButton> :
                         <IconButton onTouchTap={() => this.finishEditing(todo)}>
                         <OKButton color={this.props.project.projectColor } /> </IconButton>}
@@ -158,7 +183,10 @@ export default class Projects extends React.Component {
 
     return <div>
         <Paper style={styles.paper}><div style={styles.paperHeader}>
-            {this.props.component.componentName}<hr/></div>
+            {this.props.component.componentName}
+            <IconButton onTouchTap={() => this.deleteTodoList()} style={styles.deleteButton}>
+                <DeleteIcon color={this.props.project.projectColor } /> </IconButton>
+            <hr/></div>
           <div style={styles.paperMiddle}><List>
                 {todoList}
           </List></div>
@@ -168,7 +196,7 @@ export default class Projects extends React.Component {
                        id="newTodo"
                        value={this.state.newTodo}
                        onChange={this.handleChange}/>
-              <IconButton style={styles.Okbutton} onTouchTap={() => this.addTodoItem()}>
+              <IconButton style={styles.button} onTouchTap={() => this.addTodoItem()}>
                 <OKButton /></IconButton>
             </div>
         </Paper>

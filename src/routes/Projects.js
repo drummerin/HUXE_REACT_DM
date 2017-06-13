@@ -94,17 +94,19 @@ export default class Projects extends React.Component {
       },
     });
     projects.forEach((project) => {
-      if (project.projectName === newValue) {
-        console.log('jumps into checking TRUE');
-        this.setState({
-          newComponentDialog: {
-            ...this.state.newComponentDialog,
-            [event.target.id]: event.target.value,
-            componentAlreadyExists: true,
-            errorTextComponentName: 'this project already exists!',
-          },
-        });
-      }
+      project.components.forEach((component) => {
+        if (component.componentName === newValue) {
+          console.log('jumps into component checking TRUE');
+          this.setState({
+            newComponentDialog: {
+              ...this.state.newComponentDialog,
+              [event.target.id]: event.target.value,
+              componentAlreadyExists: true,
+              errorTextComponentName: 'this component already exists!',
+            },
+          });
+        }
+      });
     });
     if (newValue === '') {
       this.setState({
