@@ -35,6 +35,24 @@ export default function reducer(state = {
         theme: getTheme(action.payload.projectName),
       };
     }
+    case 'UPDATE_PROJECT': {
+      console.log(action.payload);
+      let projectIndex;
+      for (let i = 0; i < projects.length; i += 1) {
+        if (projects[i].projectName === action.payload.projectName) {
+          projectIndex = i;
+          console.log(projectIndex);
+          break;
+        }
+      }
+      return {
+        ...state,
+        project: {
+          ...projects[projectIndex],
+        },
+        theme: getTheme(action.payload.projectName),
+      };
+    }
     case 'DELETE_PROJECT': {
       return {
         ...state,

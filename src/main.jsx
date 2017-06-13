@@ -9,6 +9,7 @@ import promiseMiddleware from 'redux-promise-middleware';
 import App from './App.jsx';
 import reducers from './reducers';
 import './styles.css'; // imports last locale stuff
+import projects from './projects';
 
 injectTapEventPlugin();
 const root = document.querySelector('#root');
@@ -23,12 +24,29 @@ const config = {
   storageBucket: 'planit-e2048.appspot.com',
   messagingSenderId: '747737733905',
 };
-firebase.initializeApp(config);
+const fb = firebase.initializeApp(config).database().ref('projects');
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App/>
-    </Provider>,
-    root,
-);
-
+fb.on('value', (snapshot) => {
+  console.log('firebase data changed');
+  let array = [];
+  if (projects.length > 0) {
+    projects.splice(2, projects.length - 2);
+  }
+  snapshot.forEach((childSnapshot) => {
+    const childData = childSnapshot.val();
+    if (projects.indexOf(childData) === -1) {
+      projects.push(childData);
+    }
+    if (childData.components != null) {
+      console.log('firebase data COMPONENT changed');
+      array = Object.keys(childData.components).map(key => childData.components[key]);
+      childData.components = array;
+    }
+  });
+  ReactDOM.render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        root,
+    );
+});

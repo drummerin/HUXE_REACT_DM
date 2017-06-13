@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import InputField from 'material-ui/TextField';
@@ -40,6 +41,7 @@ const styles = {
 
 @connect(store => ({
   project: store.project,
+  component: store.component,
 }))
 
 
@@ -84,11 +86,22 @@ export default class Projects extends React.Component {
   static propTypes = {
     project: PropTypes.object,
     dispatch: PropTypes.func,
+    component: PropTypes.string,
   };
 
   handleChange(event) {
     console.log(`input: ${event.target.value}`);
     this.setState({ todo: event.target.value });
+  }
+
+  addTodoItem() {
+    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component}/content`).push({
+      todo: this.state.todo,
+      checked: false });
+  }
+
+  onCheckHandler(event, checked) {
+    console.log(checked);
   }
 
 
@@ -97,7 +110,7 @@ export default class Projects extends React.Component {
         <Paper style={styles.paper}><div style={styles.paperHeader}>To-do List<hr/></div>
             <List>
                 <ListItem style={styles.listItem}
-                    leftCheckbox={<Checkbox style={styles.checkbox}/>}
+                    leftCheckbox={<Checkbox style={styles.checkbox} onCheck={this.onCheckHandler}/>}
                     primaryText="Notifications"
                     secondaryText="Allow notifications"
                 />
@@ -117,8 +130,9 @@ export default class Projects extends React.Component {
                        id="todo"
                        multiLine={true}
                        value={this.state.todo}
-                       onChange={this.handleChange}
-            /><IconButton style={styles.Okbutton}><OKButton /></IconButton>
+                       onChange={this.handleChange}/>
+              <IconButton style={styles.Okbutton} onTouchTap={() => this.addTodoItem()}>
+                <OKButton /></IconButton>
             </div>
         </Paper>
       </div>;

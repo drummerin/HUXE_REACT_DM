@@ -10,6 +10,12 @@ export function addProject(project) {
     payload: project,
   };
 }
+export function updateProject(project) {
+  return {
+    type: 'UPDATE_PROJECT',
+    payload: project,
+  };
+}
 export function deleteProject(project) {
   return {
     type: 'DELETE_PROJECT',

@@ -15,7 +15,7 @@ import {
     TableRowColumn,
 } from 'material-ui/Table';
 import Dialog from 'material-ui/Dialog';
-
+import { updateProject as updateProjectAction } from '../actions';
 import projects from '../projects';
 import Todo from '../components/Todo';
 
@@ -154,46 +154,63 @@ export default class Projects extends React.Component {
     },
     });
     console.log('add comp clicked');
+    this.updateProjectAction(this.props.project);
+  }
+
+  updateProjectAction(project) {
+    this.props.dispatch(updateProjectAction(project));
   }
 
 
   render() {
+    console.log('render projects');
     let actions;
     if (this.state.newComponentDialog.componentAlreadyExists) {
       actions = [
         <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleCloseDialog}
-            />, <FlatButton
-                label="Add"
-                disabled={true}
-                primary={true}
-                keyboardFocused={true}
-            />,
+                  label="Cancel"
+                  primary={true}
+                  onTouchTap={this.handleCloseDialog}
+              />, <FlatButton
+                  label="Add"
+                  disabled={true}
+                  primary={true}
+                  keyboardFocused={true}
+              />,
       ];
     } else {
       actions = [
         <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleCloseDialog}
-            />, <FlatButton
-                label="Add"
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={() => { this.addComponent(); this.handleCloseDialog(); }}
-            />,
+                  label="Cancel"
+                  primary={true}
+                  onTouchTap={this.handleCloseDialog}
+              />, <FlatButton
+                  label="Add"
+                  primary={true}
+                  keyboardFocused={true}
+                  onTouchTap={() => {
+                    this.addComponent();
+                    this.handleCloseDialog();
+                  }}
+              />,
       ];
     }
 
+    let components;
+    if (this.props.project.components != null) {
+      components = this.props.project.components.map((component, i) => (
+
+          <Todo key={i}
+                project={this.props.project}
+                component={component.componentName}
+                name={component.componentName}/>
+      ));
+    }
+
+
     return <div>
                 <Todo project={this.props.project} name="Test"/>
-        {this.props.project.components.map((component, i) => (
-            <Todo key={i}
-                  project={this.props.project}
-                  name={component.componentName}/>
-        ))}
+        {components}
       <div><FloatingActionButton mini={true} style={styles.addButton}
                                  backgroundColor={this.props.project.projectColor}
                                  onTouchTap={() => this.handleOpenDialog()}>

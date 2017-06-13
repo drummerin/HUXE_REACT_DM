@@ -42,7 +42,7 @@ import Chat from './routes/Chat.jsx';
 import About from './routes/About';
 import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
-import { setProject as setProjectAction, addProject as addProjectAction } from './actions';
+import { setProject as setProjectAction, updateProject as updateProjectAction } from './actions';
 import projects from './projects';
 
 const colorSelected = '#3189a6';
@@ -93,6 +93,7 @@ const routes = [
   },
 ];
 
+
 @connect(store => ({
   project: store.project,
   theme: store.theme,
@@ -121,7 +122,7 @@ export default class App extends React.Component {
         projectAlreadyExists: false,
       },
     };
-    this.buildProjectList = this.buildProjectList.bind(this);
+    // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleTouchTapDay = this.handleTouchTapDay.bind(this);
@@ -131,40 +132,9 @@ export default class App extends React.Component {
     project: PropTypes.object,
     theme: PropTypes.object,
     dispatch: PropTypes.func,
+    data: PropTypes.object,
   };
 
-
-  componentWillMount() {
-    firebase.database().ref('projects').on('value', this.buildProjectList);
-    console.log('component mounts');
-  }
-
-  buildProjectList(dataSnapshot) {
-    let array = [];
-    if (projects.length > 0) {
-      // this.state.projectList.splice(0, this.state.projectList.length);
-      projects.splice(2, projects.length - 2);
-    }
-    dataSnapshot.forEach((childSnapshot) => {
-            // childData will be the actual contents of the child
-      const childData = childSnapshot.val();
-      // console.log(`childData name ${childData.projectName}`);
-      // console.log(`childData ${childData}`);
-      // if (this.state.projectList.indexOf(childData) === -1) {
-      if (projects.indexOf(childData) === -1) {
-        // console.log('not contained');
-        console.log(childData.components);
-
-        array = Object.keys(childData.components).map(key => childData.components[key]);
-        childData.components = array;
-        projects.push(childData);
-        console.log(array);
-        console.log(projects);
-      }
-    });
-    // console.log(`projectList ${projects}`);
-    this.setState(this.state);
-  }
 
   toggleDrawer() {
     this.setState({
@@ -234,6 +204,13 @@ export default class App extends React.Component {
       this.props.dispatch(setProjectAction(project));
     }
   }
+  updateProjectAction(name) {
+    const project = projects.find(loopProject => loopProject === name);
+    if (project) {
+      this.props.dispatch(updateProjectAction(project));
+    }
+  }
+
 
   deleteProject(project) {
     console.log(project);
@@ -301,6 +278,7 @@ export default class App extends React.Component {
   };
 
   render() {
+    console.log('rendering');
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
 
     document.querySelector('html').style.backgroundColor = styles.htmlStyles.backgroundColor;
