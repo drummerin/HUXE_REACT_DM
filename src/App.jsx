@@ -36,11 +36,10 @@ import {
 
 import { List, ListItem } from 'material-ui/List';
 import Projects from './routes/Projects';
-import Components from './routes/Components';
 import Settings from './routes/Settings';
 import Chat from './routes/Chat.jsx';
-import Login from './routes/Login';
-import Signup from './routes/Signup';
+// import Login from './routes/Login';
+// import Signup from './routes/Signup';
 import About from './routes/About';
 import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
@@ -69,12 +68,6 @@ const styles = {
 
 const routes = [
   {
-    link: '/components',
-    title: 'Components',
-    component: Components,
-    icon: <ComponentIcon/>,
-  },
-  {
     link: '/settings',
     title: 'Settings',
     component: Settings,
@@ -92,7 +85,7 @@ const routes = [
     component: Chat,
     icon: <ChatIcon/>,
   },
-  {
+  /* {
     link: '/login',
     title: 'Login',
     component: Login,
@@ -103,7 +96,7 @@ const routes = [
     title: 'Signup',
     component: Signup,
     icon: <InfoIcon/>,
-  },
+  },*/
   /* {
     link: '/todo',
     title: 'Todo',
@@ -144,7 +137,7 @@ export default class App extends React.Component {
     // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
-    this.handleTouchTapDay = this.handleTouchTapDay.bind(this);
+    App.handleTouchTapDay = App.handleTouchTapDay.bind(this);
   }
 
   static propTypes = {
@@ -194,7 +187,7 @@ export default class App extends React.Component {
     this.setState({ dialogDeleteOpen: false });
   };
 
-  handleTouchTapDay(event, date) {
+  static handleTouchTapDay(event, date) {
     console.log(`date: ${date}${event}`);
   }
 
@@ -409,7 +402,7 @@ export default class App extends React.Component {
                         onRightIconButtonTouchTap={() => this.handleDeleteDialogOpen()}
                     />
                     <ProjectHeaderRight project={this.props.project.projectName}/>
-                    <Calendar firstDayOfWeek={1} onTouchTapDay={this.handleTouchTapDay}/>
+                    <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
                 </Drawer>
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (

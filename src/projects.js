@@ -5,9 +5,11 @@ export default [
     components: [{
       componentName: 'compi',
       componentType: 'Todo',
+      id: 'xdes',
     }, {
       componentName: 'compooo',
       componentType: 'Toduuu',
+      id: 'ffree',
     }],
   },
   {
@@ -16,6 +18,7 @@ export default [
     components: [{
       componentName: 'compoo',
       componentType: 'Todo',
+      id: 'regfge',
     }],
   },
 ];
