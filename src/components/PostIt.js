@@ -40,7 +40,7 @@ const styles = {
 }))
 
 
-export default class Projects extends React.Component {
+export default class PostIt extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

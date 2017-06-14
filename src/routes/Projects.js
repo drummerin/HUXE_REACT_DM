@@ -16,7 +16,6 @@ import {
 } from 'material-ui/Table';
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
-import projects from '../projects';
 import Component from '../components/Component';
 
 const styles = {
@@ -149,12 +148,16 @@ export default class Projects extends React.Component {
         componentName: this.state.newComponentDialog.componentName,
         componentType: this.state.newComponentDialog.selectedComponent,
         todos: '' });
-    }
-    if (this.state.newComponentDialog.selectedComponent === 'PostIt') {
+    } else if (this.state.newComponentDialog.selectedComponent === 'PostIt') {
       firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
         componentName: this.state.newComponentDialog.componentName,
         componentType: this.state.newComponentDialog.selectedComponent,
         postItText: '' });
+    } else if (this.state.newComponentDialog.selectedComponent === 'Draw') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        drawable: '' });
     }
 
 

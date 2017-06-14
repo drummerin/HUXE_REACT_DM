@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Todo from './Todo';
 import PostIt from './PostIt';
+import Draw from './Draw';
 
 
 @connect(store => ({
@@ -33,6 +34,13 @@ export default class Component extends React.Component {
                 project={this.props.project}
                 component={this.props.component}
                 name={this.props.component.componentName}/>,
+      ];
+    } else if (this.props.component.componentType === 'Draw') {
+      Compo = [
+        <Draw key={this.props.component.componentName}
+                  project={this.props.project}
+                  component={this.props.component}
+                  name={this.props.component.componentName}/>,
       ];
     }
     console.log(Compo);

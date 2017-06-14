@@ -134,7 +134,7 @@ export default class App extends React.Component {
         docked: false,
       },
       drawerRight: {
-        open: true,
+        open: false,
       },
       dialogOpen: false,
       dialogDeleteOpen: false,
