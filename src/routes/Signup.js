@@ -118,6 +118,7 @@ export default class Signup extends React.Component {
   saveUser(user) {
     firebase.database().ref(`users/${user.uid}`).set({
       name: this.state.user.name,
+      online: false,
     });
   }
 
