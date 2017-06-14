@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Link,
 } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
@@ -61,7 +62,7 @@ export default class Signup extends React.Component {
   }
 
   static propTypes = {
-    history: React.PropTypes.object,
+    history: PropTypes.object,
   };
 
   addUser() {
@@ -115,7 +116,7 @@ export default class Signup extends React.Component {
 
   saveUser(user) {
     firebase.database().ref(`users/${user.uid}`).set({
-      name: this.name,
+      name: this.state.user.name,
     });
   }
 
