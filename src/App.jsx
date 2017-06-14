@@ -20,6 +20,7 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
+import LogoutIcon from 'material-ui/svg-icons/action/input';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import Dialog from 'material-ui/Dialog';
@@ -119,8 +120,8 @@ const routes = [
 }))
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       drawer: {
         open: false,
@@ -140,6 +141,7 @@ export default class App extends React.Component {
         errorText: 'This field is required!',
         projectAlreadyExists: false,
       },
+      user: null,
     };
     // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -152,8 +154,25 @@ export default class App extends React.Component {
     theme: PropTypes.object,
     dispatch: PropTypes.func,
     data: PropTypes.object,
+    history: PropTypes.object,
   };
 
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  componentDidMount() {
+    console.log('mount');
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({
+          user: user.displayName,
+        });
+      } else {
+          // this.context.history.push('/login');
+      }
+    });
+  }
 
   toggleDrawer() {
     this.setState({
@@ -163,6 +182,7 @@ export default class App extends React.Component {
       },
     });
   }
+
   toggleDrawerRight() {
     this.setState({
       drawerRight: {
@@ -198,6 +218,19 @@ export default class App extends React.Component {
     console.log(`date: ${date}${event}`);
   }
 
+  logout() {
+    firebase.auth().signOut().then(() => {
+      console.log('logged out');
+      this.setState({
+        user: null,
+      });
+      this.closeDrawer();
+      // this.props.history.push('/login');
+    }).catch((error) => {
+      console.log(`logout error: ${error}`);
+    });
+  }
+
   addProject() {
     firebase.database().ref(`projects/${this.state.newProjectDialog.projectName}`).set({
       projectName: this.state.newProjectDialog.projectName,
@@ -214,19 +247,20 @@ export default class App extends React.Component {
     },
     });
   }
+
   setProject(name) {
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(setProjectAction(project));
     }
   }
+
   updateProjectAction(name) {
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(updateProjectAction(project));
     }
   }
-
 
   deleteProject(project) {
     console.log(project);
@@ -372,7 +406,7 @@ export default class App extends React.Component {
     return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
             <div>
-              <AppBar title={this.state.project}
+              <AppBar title={this.state.user}
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
                       iconElementRight={<IconButton><InfoOutlineIcon/></IconButton>}
@@ -392,13 +426,18 @@ export default class App extends React.Component {
                                 nestedItems={ renderedProjectList }
                       /></Link>
                   {routes.map(route => (
+                      route.component !== Login && route.component !== Signup ?
                       <Link to={route.link} key={route.link} style={styles.menuLink}>
                         <ListItem key={route.title}
                                   primaryText={route.title}
                                   leftIcon={route.icon}
                                   onTouchTap={() => this.closeDrawer()}/>
-                      </Link>
+                      </Link> : null
                   ))}
+                    <ListItem key="logout"
+                              primaryText="Abmelden"
+                              leftIcon={<LogoutIcon/>}
+                              onTouchTap={() => this.logout()}/>
                   </List>
               </Drawer>
                 <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
@@ -413,7 +452,7 @@ export default class App extends React.Component {
                 </Drawer>
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
-                      <Route exact={route.exact}
+                          <Route exact={route.exact}
                              key={route.link}
                              path={route.link}
                              component={route.component}/>
