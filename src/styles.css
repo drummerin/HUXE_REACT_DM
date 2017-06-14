@@ -6,3 +6,6 @@ html, body {
     color: green;
 }
 
+.cursor {
+    cursor: crosshair;
+}

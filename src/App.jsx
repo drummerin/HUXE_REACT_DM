@@ -145,7 +145,7 @@ export default class App extends React.Component {
         projectDate: '',
         projectColor: '#808080',
         errorText: 'This field is required!',
-        projectAlreadyExists: false,
+        projectAlreadyExists: true,
       },
     };
     // this.buildProjectList = this.buildProjectList.bind(this);
