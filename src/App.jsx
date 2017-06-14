@@ -143,7 +143,7 @@ export default class App extends React.Component {
         projectDescription: '',
         projectAuthor: '',
         projectDate: '',
-        projectColor: '',
+        projectColor: '#808080',
         errorText: 'This field is required!',
         projectAlreadyExists: false,
       },
@@ -217,7 +217,7 @@ export default class App extends React.Component {
       projectDescription: '',
       projectAuthor: '',
       projectDate: '',
-      projectColor: '#FF0000',
+      projectColor: '#808080',
     },
     });
   }
