@@ -6,6 +6,9 @@ import { List, ListItem } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import CommunicationCall from 'material-ui/svg-icons/communication/call';
+import IconButton from 'material-ui/IconButton';
+import { green600, grey300 } from 'material-ui/styles/colors';
 
 
 const styles = {
@@ -52,7 +55,6 @@ export default class Chat extends React.Component {
       this.setState({
         users,
       });
-      console.log(this.state.users);
     });
   }
 
@@ -62,20 +64,27 @@ export default class Chat extends React.Component {
       <Paper style={styles.container}>
       <Paper style={styles.userPaper} zDepth={2}>
         <Subheader>User</Subheader>
-        <List>
+        <div>
             { this.state.users ?
                 this.state.users.map(user => (
                      user.online ?
-                    <ListItem key={user.name}
-                        primaryText={user.name}
-                              rightIcon={<CommunicationChatBubble />}
-                    /> :
-                    <ListItem key={user.name}
-                    primaryText={user.name}
-                    />
+                         <div key={user.name}><span>{user.name}</span>
+                        <IconButton>
+                          <CommunicationChatBubble color={green600}/>
+                        </IconButton>
+                           <IconButton>
+                             <CommunicationCall color={green600}/>
+                           </IconButton>
+                    </div>
+                     :
+                         <div key={user.name}><span>{user.name}</span>
+                           <IconButton>
+                             <CommunicationChatBubble color={grey300}/>
+                         </IconButton>
+                         </div>
                 )) : 'no user'
             }
-        </List>
+        </div>
       </Paper>
       </Paper>
     </div>;
