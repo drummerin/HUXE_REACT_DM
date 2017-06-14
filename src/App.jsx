@@ -41,9 +41,9 @@ import {
 import { List, ListItem } from 'material-ui/List';
 import Projects from './routes/Projects';
 import Settings from './routes/Settings';
-import Chat from './routes/Chat.jsx';
-// import Login from './routes/Login';
-// import Signup from './routes/Signup';
+import Chat from './routes/ChatOverview.jsx';
+import Login from './routes/Login';
+import Signup from './routes/Signup';
 import About from './routes/About';
 import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
@@ -100,7 +100,7 @@ const routes = [
     component: Chat,
     icon: <ChatIcon/>,
   },
-  /* {
+  {
     link: '/login',
     title: 'Login',
     component: Login,
@@ -111,7 +111,7 @@ const routes = [
     title: 'Signup',
     component: Signup,
     icon: <InfoIcon/>,
-  },*/
+  },
   /* {
     link: '/todo',
     title: 'Todo',

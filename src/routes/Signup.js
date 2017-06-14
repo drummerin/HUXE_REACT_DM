@@ -91,7 +91,7 @@ export default class Signup extends React.Component {
       },
     });
 
-    if (event.target.id === 'name' && newValue.length > 4) {
+    if (event.target.id === 'name' && newValue.length > 3) {
       nameError = false;
     }
 
