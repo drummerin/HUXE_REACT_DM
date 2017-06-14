@@ -14,7 +14,7 @@ import { updateProject as updateProjectAction } from '../actions';
 
 const styles = {
   paper: {
-    margin: '5px',
+    margin: '10px',
     width: '300px',
     height: '300px',
     float: 'left',
@@ -37,14 +37,15 @@ const styles = {
   },
   listItem: {
     padding: '10px 0px 10px 50px',
+    width: '180px',
   },
   input: {
     marginTop: '-20px',
     width: '225px',
   },
   inputTodo: {
-    height: '50px',
-    width: '150px',
+    width: '180px',
+    height: '40px',
     marginTop: 0,
   },
   deleteButton: {
@@ -59,6 +60,9 @@ const styles = {
     height: '25px',
     float: 'right',
   },
+  editButton: {
+    marginRight: '-45px',
+  },
 
 };
 
@@ -67,7 +71,7 @@ const styles = {
 }))
 
 
-export default class Projects extends React.Component {
+export default class Todo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +93,6 @@ export default class Projects extends React.Component {
   };
 
   handleChange(event) {
-    console.log(`input: ${event.target.value}`);
     this.setState({ [event.target.id]: event.target.value });
   }
 
@@ -110,8 +113,7 @@ export default class Projects extends React.Component {
   }
 
   editTodo(todo) {
-    console.log(todo.id);
-    this.setState({ editingTodo: todo.id });
+    this.setState({ editingTodo: todo.id, editTodo: todo.todo });
   }
 
   finishEditing(todo) {
@@ -132,8 +134,6 @@ export default class Projects extends React.Component {
       todo: id.todo,
       checked: !checked,
       id: id.id });
-    console.log(`id: ${id.todo + id.id}`);
-    console.log(`checked: ${checked}`);
     this.updateProjectAction(this.props.project);
   }
 
@@ -143,20 +143,16 @@ export default class Projects extends React.Component {
   }
 
   render() {
-    console.log(this.props.component.todos);
     let todoList;
     if (this.props.component.todos != null) {
       const todoarray = Object.keys(this.props.component.todos).map(key =>
           this.props.component.todos[key]);
-      console.log(todoarray);
       todoList = todoarray.map((todo, i) => (
           <ListItem key={i}
                     style={styles.listItem}
                     primaryText={(this.state.editingTodo === todo.id) ?
                         <InputField style={styles.inputTodo}
-                                   floatingLabelStyle={{ marginTop: '-20px' }}
-                                   floatingLabelText={todo.todo}
-                                   inputStyle={{ height: '30px' }}
+                                   inputStyle={{ height: '20px' }}
                                    hintText="if empty, delete!"
                                    id="editTodo"
                                    value={this.state.editTodo}
@@ -164,10 +160,14 @@ export default class Projects extends React.Component {
                         <span>{todo.todo}</span>}
                     rightIconButton={
                         (this.state.editingTodo !== todo.id) ?
-                        <IconButton onTouchTap={() => this.editTodo(todo)} style={{ marginRight: '-20px' }}>
-                        <EditButton color={this.props.project.projectColor } /></IconButton> :
-                        <IconButton onTouchTap={() => this.finishEditing(todo)}>
-                        <OKButton color={this.props.project.projectColor } /> </IconButton>}
+                        <IconButton onTouchTap={() => this.editTodo(todo)}
+                                    style={styles.editButton}>
+                        <EditButton color='#DDDDDD'
+                                    hoverColor={this.props.project.projectColor}/></IconButton> :
+                        <IconButton onTouchTap={() => this.finishEditing(todo)}
+                                    style={styles.editButton}>
+                        <OKButton color='#DDDDDD'
+                                  hoverColor={this.props.project.projectColor} /> </IconButton>}
 
                     leftCheckbox={
                         <Checkbox style={styles.checkbox} key={todo.todo}
@@ -185,7 +185,8 @@ export default class Projects extends React.Component {
         <Paper style={styles.paper}><div style={styles.paperHeader}>
             {this.props.component.componentName}
             <IconButton onTouchTap={() => this.deleteTodoList()} style={styles.deleteButton}>
-                <DeleteIcon color={this.props.project.projectColor } /> </IconButton>
+                <DeleteIcon color='#DDDDDD'
+                            hoverColor={this.props.project.projectColor} /> </IconButton>
             <hr/></div>
           <div style={styles.paperMiddle}><List>
                 {todoList}
@@ -197,7 +198,8 @@ export default class Projects extends React.Component {
                        value={this.state.newTodo}
                        onChange={this.handleChange}/>
               <IconButton style={styles.button} onTouchTap={() => this.addTodoItem()}>
-                <OKButton /></IconButton>
+                <OKButton color='#DDDDDD'
+                          hoverColor={this.props.project.projectColor}/></IconButton>
             </div>
         </Paper>
       </div>;

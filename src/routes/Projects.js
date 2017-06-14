@@ -16,8 +16,7 @@ import {
 } from 'material-ui/Table';
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
-import projects from '../projects';
-import Todo from '../components/Todo';
+import Component from '../components/Component';
 
 const styles = {
   container: {
@@ -45,9 +44,9 @@ const styles = {
 };
 
 const items = [
-  <MenuItem key={1} value={'TODO'} primaryText="TODO" />,
-  <MenuItem key={2} value={'List'} primaryText="List" />,
-  <MenuItem key={3} value={3} primaryText="Weeknights" />,
+  <MenuItem key={1} value={'Todo'} primaryText="Todo" />,
+  <MenuItem key={2} value={'PostIt'} primaryText="PostIt" />,
+  <MenuItem key={3} value={'Draw'} primaryText="Draw" />,
   <MenuItem key={4} value={4} primaryText="Weekends" />,
   <MenuItem key={5} value={5} primaryText="Weekly" />,
 ];
@@ -93,20 +92,18 @@ export default class Projects extends React.Component {
         errorTextComponentName: '',
       },
     });
-    projects.forEach((project) => {
-      project.components.forEach((component) => {
-        if (component.componentName === newValue) {
-          console.log('jumps into component checking TRUE');
-          this.setState({
-            newComponentDialog: {
-              ...this.state.newComponentDialog,
-              [event.target.id]: event.target.value,
-              componentAlreadyExists: true,
-              errorTextComponentName: 'this component already exists!',
-            },
-          });
-        }
-      });
+    this.props.project.components.forEach((component) => {
+      if (component.componentName === newValue) {
+        console.log('jumps into component checking TRUE');
+        this.setState({
+          newComponentDialog: {
+            ...this.state.newComponentDialog,
+            [event.target.id]: event.target.value,
+            componentAlreadyExists: true,
+            errorTextComponentName: 'this component already exists!',
+          },
+        });
+      }
     });
     if (newValue === '') {
       this.setState({
@@ -146,10 +143,23 @@ export default class Projects extends React.Component {
   };
 
   addComponent() {
-    firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
-      componentName: this.state.newComponentDialog.componentName,
-      componentType: this.state.newComponentDialog.selectedComponent,
-      todos: '' });
+    if (this.state.newComponentDialog.selectedComponent === 'Todo') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        todos: '' });
+    } else if (this.state.newComponentDialog.selectedComponent === 'PostIt') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        postItText: '' });
+    } else if (this.state.newComponentDialog.selectedComponent === 'Draw') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        drawable: '' });
+    }
+
 
     this.setState({ newComponentDialog: {
       componentName: '',
@@ -201,11 +211,11 @@ export default class Projects extends React.Component {
 
     let components;
     if (this.props.project.components != null) {
-      components = this.props.project.components.map((component, i) => (
-          <Todo key={i}
+      components = this.props.project.components.map((Comp, i) => (
+          <Component key={i}
                 project={this.props.project}
-                component={component}
-                name={component.componentName}/>
+                component={Comp}
+                name={Comp.componentName}/>
       ));
     }
 
