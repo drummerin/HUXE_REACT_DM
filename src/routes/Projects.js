@@ -178,7 +178,7 @@ export default class Projects extends React.Component {
   render() {
     console.log('render projects');
     let actions;
-    if (this.state.newComponentDialog.componentAlreadyExists) {
+    if (this.state.newComponentDialog.componentAlreadyExists || this.state.newComponentDialog.selectedComponent === '') {
       actions = [
         <FlatButton
                   label="Cancel"
