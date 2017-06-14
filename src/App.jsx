@@ -13,6 +13,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import transitions from 'material-ui/styles/transitions';
 import ProjectsIcon from 'material-ui/svg-icons/av/library-books';
 import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import ChatIcon from 'material-ui/svg-icons/communication/chat';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import EditIcon from 'material-ui/svg-icons/image/edit';
@@ -22,6 +24,7 @@ import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import ColorIcon from 'material-ui/svg-icons/image/color-lens';
 import Dialog from 'material-ui/Dialog';
 import DatePicker from 'material-ui/DatePicker';
 import Calendar from 'material-ui/DatePicker/Calendar';
@@ -47,6 +50,17 @@ import { setProject as setProjectAction, updateProject as updateProjectAction } 
 import projects from './projects';
 
 const colorSelected = '#3189a6';
+
+const colorList = [
+  <MenuItem key={'color1'} value={'#808080'} primaryText="Gray" leftIcon={<ColorIcon color="#808080" />} />,
+  <MenuItem key={'color2'} value={'#00626b'} primaryText="Teal" leftIcon={<ColorIcon color="#00626b" />} />,
+  <MenuItem key={'color3'} value={'#000080'} primaryText="Blue" leftIcon={<ColorIcon color="#000080" />} />,
+  <MenuItem key={'color4'} value={'#8B008B'} primaryText="Violet" leftIcon={<ColorIcon color="#8B008B" />} />,
+  <MenuItem key={'color5'} value={'#800000'} primaryText="Red" leftIcon={<ColorIcon color="#800000" />} />,
+  <MenuItem key={'color6'} value={'#d87600'} primaryText="Orange" leftIcon={<ColorIcon color="#d87600" />} />,
+  <MenuItem key={'color7'} value={'#228B22'} primaryText="Green" leftIcon={<ColorIcon color="#228B22" />} />,
+];
+
 const styles = {
   htmlStyles: {
     backgroundColor: '#d8d8d8',
@@ -129,7 +143,7 @@ export default class App extends React.Component {
         projectDescription: '',
         projectAuthor: '',
         projectDate: '',
-        projectColor: '#FF0000',
+        projectColor: '',
         errorText: 'This field is required!',
         projectAlreadyExists: false,
       },
@@ -286,6 +300,16 @@ export default class App extends React.Component {
     });
   };
 
+  handleColorChange= (event, index, value) => {
+    console.log(`color:${value}`);
+    this.setState({
+      newProjectDialog: {
+        ...this.state.newProjectDialog,
+        projectColor: value,
+      },
+    });
+  };
+
   render() {
     console.log('rendering');
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
@@ -379,7 +403,7 @@ export default class App extends React.Component {
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
                                 primaryText="Projects"
-                                leftIcon={<ProjectsIcon/>}
+                                leftIcon={<ComponentIcon/>}
                                 initiallyOpen={true}
                                 primaryTogglesNestedList={true}
                                 nestedItems={ renderedProjectList }
@@ -420,7 +444,7 @@ export default class App extends React.Component {
                         modal={false}
                         open={this.state.dialogOpen}
                         onRequestClose={this.handleCloseDialog}>
-                        <Table height='200px'
+                        <Table height='250px'
                         selectable={false}><TableBody
                             displayRowCheckbox={false}><TableRow displayBorder={false}>
                             <TableRowColumn>
@@ -437,11 +461,11 @@ export default class App extends React.Component {
                                   hintText="Describe the topic and content of your project."
                                   value={this.state.newProjectDialog.projectDescription}
                                   id="projectDescription"
-                                  multiLine={true}
                                   floatingLabelText="Project description"
                                   onChange={this.handleChange}/>
-                            </TableRowColumn></TableRow>
-                            <TableRow><TableRowColumn>
+                            </TableRowColumn>
+                          </TableRow>
+                            <TableRow displayBorder={false}><TableRowColumn>
                                 <InputField
                                   hintText="The author(s) of this project."
                                   value={this.state.newProjectDialog.projectAuthor}
@@ -454,7 +478,18 @@ export default class App extends React.Component {
                                     hintText="Date of creation."
                                     value={this.state.newProjectDialog.projectDate !== '' ? new Date(this.state.newProjectDialog.projectDate) : null}
                                     onChange={this.handleDateChange}/>
-                            </TableRowColumn></TableRow></TableBody></Table>
+                            </TableRowColumn></TableRow>
+                          <TableRow>
+                          <TableRowColumn>
+                            <SelectField
+                                floatingLabelText="Color"
+                                value={this.state.newProjectDialog.projectColor}
+                                id="projectColor"
+                                onChange={this.handleColorChange}>
+                                {colorList}
+                            </SelectField>
+                          </TableRowColumn></TableRow>
+                        </TableBody></Table>
                     </Dialog>
                     <Dialog
                         title="Delete project"
