@@ -226,8 +226,11 @@ export default class App extends React.Component {
   }
 
   logout() {
-    firebase.auth().signOut().then(() => {
+    firebase.auth().signOut().then((user) => {
       console.log('logged out');
+      firebase.database().ref(`users/${user.uid}`).update({
+        online: false,
+      });
       this.setState({
         user: null,
       });
