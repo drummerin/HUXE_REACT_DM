@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Link,
 } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
@@ -50,7 +51,7 @@ export default class Login extends React.Component {
   }
 
   static propTypes = {
-    history: React.PropTypes.object,
+    history: PropTypes.object,
   };
 
   handleChange = (event, newValue) => {
