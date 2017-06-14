@@ -19,6 +19,13 @@ const styles = {
     width: 250,
     margin: 10,
   },
+  user: {
+    padding: '10px 15px',
+  },
+  iconButton: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
 };
 
 
@@ -68,17 +75,19 @@ export default class Chat extends React.Component {
             { this.state.users ?
                 this.state.users.map(user => (
                      user.online ?
-                         <div key={user.name}><span>{user.name}</span>
-                        <IconButton>
+                         <div key={user.name} style={styles.user}>
+                           <span style={{ marginRight: 10 }}>{user.name}</span>
+                        <IconButton style={styles.iconButton}>
                           <CommunicationChatBubble color={green600}/>
                         </IconButton>
-                           <IconButton>
+                           <IconButton style={styles.iconButton}>
                              <CommunicationCall color={green600}/>
                            </IconButton>
                     </div>
                      :
-                         <div key={user.name}><span>{user.name}</span>
-                           <IconButton>
+                         <div key={user.name} style={styles.user}>
+                           <span style={{ marginRight: 10 }}>{user.name}</span>
+                           <IconButton style={styles.iconButton}>
                              <CommunicationChatBubble color={grey300}/>
                          </IconButton>
                          </div>
