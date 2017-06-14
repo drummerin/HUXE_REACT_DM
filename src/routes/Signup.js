@@ -11,7 +11,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 let nameError = true;
 let emailError = true;
 let passwordError = true;
-const emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// const emailRE =
+// /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@
+// ((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const styles = {
   logo: {
@@ -89,7 +91,7 @@ export default class Signup extends React.Component {
       },
     });
 
-    if (event.target.id === 'name' && newValue.length > 4) {
+    if (event.target.id === 'name' && newValue.length > 3) {
       nameError = false;
     }
 
@@ -101,13 +103,12 @@ export default class Signup extends React.Component {
     }
 
     if (event.target.id === 'email' && newValue.length > 4) {
-      if (emailRE.test(newValue)) {
-        emailError = false;
-      }
+      // if (emailRE.test(newValue)) {
+      emailError = false;
+      // }
     }
 
     if (!nameError && !emailError && !passwordError) {
-      console.log('no err');
       this.setState({
         signupError: false,
       });
