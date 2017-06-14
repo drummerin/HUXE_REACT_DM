@@ -8,6 +8,7 @@ import OKButton from 'material-ui/svg-icons/navigation/check';
 import ImageButton from 'material-ui/svg-icons/image/image';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import IconButton from 'material-ui/IconButton';
+import { SketchPicker } from 'react-color';
 import { updateProject as updateProjectAction } from '../actions';
 
 const styles = {
@@ -47,9 +48,19 @@ const styles = {
     height: '25px',
     float: 'right',
   },
-  canvas: {
+  popover: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    zIndex: '2',
   },
-
+  cover: {
+    position: 'fixed',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
+  },
 };
 
 
@@ -57,7 +68,7 @@ const styles = {
   project: store.project,
 }))
 
-/* Drawing Functions and Canvas Implementation:
+/* Drawing Functions and Canvas Implementation (Modified)
  Copyright (c) 2017 Marcin Borkowski
  MIT License
  */
@@ -73,6 +84,7 @@ export default class Draw extends React.Component {
       lineThickness: 1,
       lineColor: '#555555',
       lineStyle: 'round',
+      selectingColor: false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -97,8 +109,7 @@ export default class Draw extends React.Component {
   }
 
   finishEditing() {
-    this.setState({ editingDraw: false, DrawContent: '' });
-    this.updateProjectAction(this.props.project);
+    this.setState({ selectingColor: false, editingDraw: false, DrawContent: '', lineThickness: 1, lineColor: '#555555', blur: true });
   }
 
   deleteDraw() {
@@ -112,11 +123,18 @@ export default class Draw extends React.Component {
   }
 
   componentDidMount() {
+    console.log('canvas MOUNTED');
     if (self && (!this.canvas.getContext || !this.canvas.getBoundingClientRect)) {
       throw new Error('HTML5 Canvas is not supported in your browser.');
     }
     this.ctx = this.canvas.getContext('2d') || {};
     this.bcr = this.canvas.getBoundingClientRect() || {};
+
+    // to set the background of the component white
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.fillRect(0, 0, 260, 240);
+    this.ctx.closePath();
+
     // this.setDefaultAppearance();
     const canvas = this.canvas;
     const context = canvas.getContext('2d');
@@ -126,32 +144,49 @@ export default class Draw extends React.Component {
     };
 
     imageObj.src = this.props.component.drawContent;
-    console.log(imageObj.src);
+
+    this.setAppearance();
   }
 
-  componentWillUpdate(nextProps) {
-    console.log(this.props.component.drawContent);
-    this.setDefaultAppearance();
+  componentDidUpdate() {
+    // get firebase canvas content
+    console.log('draw comp updated');
+    const canvas = this.canvas;
+    const context = canvas.getContext('2d');
+    const imageObj = new Image();
+    imageObj.onload = function () {
+      context.drawImage(this, 0, 0);
+    };
+
+    imageObj.src = this.props.component.drawContent;
   }
 
   hashTable = {};
   rawData = [];
 
-  setDefaultAppearance() {
+  setAppearance() {
     this.ctx.lineWidth = this.state.lineThickness;
     this.ctx.strokeStyle = this.state.lineColor;
     this.ctx.lineJoin = this.state.lineStyle;
 
     if (this.state.blur) {
-      this.ctx.shadowBlur = 2;
+      this.ctx.shadowBlur = 1;
       this.ctx.shadowColor = this.state.lineColor;
+    } else {
+      this.ctx.shadowBlur = 0;
+      this.ctx.shadowColor = 0;
     }
   }
 
   onMouseDown = (event) => {
+    // this.ctx.lineWidth = this.state.lineThickness;
+    // this.ctx.strokeStyle = this.state.lineColor;
+    this.setAppearance();
     this.setState({
       isMouseDown: true,
     });
+
+    this.ctx.beginPath();
 
     this.ctx.moveTo(
             (event.pageX || event.touches[0].pageX) - this.bcr.left,
@@ -165,6 +200,7 @@ export default class Draw extends React.Component {
         isMouseDown: false,
       });
 
+      this.ctx.closePath();
       this.hashTable = {};
 
             // remove duplicates
@@ -175,8 +211,6 @@ export default class Draw extends React.Component {
         return (match ? false : (this.hashTable[key] = true));
       });
 
-      console.log(this.rawData);
-      console.log(this.canvas);
       const image = new Image();
       image.src = this.canvas.toDataURL('image/png');
 
@@ -184,6 +218,8 @@ export default class Draw extends React.Component {
         componentName: this.props.component.componentName,
         componentType: this.props.component.componentType,
         drawContent: image.src });
+      // this.ctx.clearRect(0, 0, 260, 240);
+      this.updateProjectAction(this.props.project);
     }
   };
 
@@ -195,7 +231,6 @@ export default class Draw extends React.Component {
         event.pageX || event.touches[0].pageX,
         event.pageY || event.touches[0].pageY,
       ];
-
       this.rawData.push(coordinates);
       this.drawOnCanvas(coordinates);
     }
@@ -206,7 +241,7 @@ export default class Draw extends React.Component {
             left,
             top,
         ] = coordinates;
-
+    // this.ctx.strokeStyle = color;
     this.ctx.lineTo(
             left - this.bcr.left,
             top - this.bcr.top,
@@ -214,14 +249,14 @@ export default class Draw extends React.Component {
     this.ctx.stroke();
   };
 
-    erase() {
-      // todo
-    }
+  erase = () => {
+    this.setState({ lineThickness: 10, lineColor: '#ffffff', blur: false });
+    console.log('erasing??');
+  };
 
-    changeColor() {
-      // todo
-    }
-
+  changeColor= () => {
+    this.setState({ selectingColor: true });
+  };
 
   render() {
     console.log(this.props.component.postItText);
@@ -241,7 +276,7 @@ export default class Draw extends React.Component {
                 <IconButton onTouchTap={() => this.editDraw()} style={styles.button}>
                   <EditButton color='#DDDDDD'
                               hoverColor={this.props.project.projectColor} /></IconButton>}
-        </div><div>
+        <div className="cursor">
             <canvas
                 ref={canvas => (this.canvas = canvas)}
                 height='240px'
@@ -252,13 +287,14 @@ export default class Draw extends React.Component {
                 onTouchEnd={this.onMouseUp}
                 onMouseMove={this.onMouseMove}
                 onMouseOut={this.onMouseUp} />
-          </div>
+          </div></div>
         </Paper>
         {(this.state.editingDraw) ?
         <Paper style={styles.paperMenu}><div style={styles.paperHeader}>
           <IconButton onTouchTap={() => this.finishEditing()} style={styles.button}>
             <EditButton color={this.props.project.projectColor}/></IconButton><br/>
-          <IconButton onTouchTap={() => this.erase()} style={styles.editDrawButton}>
+          <IconButton onTouchTap={() => this.erase()} style={styles.editDrawButton} tooltip="erase"
+                      tooltipPosition="top-right">
             <DeleteIcon color='#DDDDDD'
                         hoverColor={this.props.project.projectColor} /> </IconButton>
           <IconButton onTouchTap={() => this.changeColor()} style={styles.editDrawButton}>
@@ -267,10 +303,11 @@ export default class Draw extends React.Component {
         </Paper> :
           <div></div>
          }
-      </div>;
+        { this.state.selectingColor ? <div style={ styles.popover }>
+              <div style={ styles.cover } onClick={ this.handleClose }/>
+              <SketchPicker color={ this.state.color } onChange={ this.handleChange } />
+            </div> : null }</div>;
   }
-
-
 
 }
 

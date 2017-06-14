@@ -68,7 +68,7 @@ export default class Projects extends React.Component {
         componentName: '',
         errorTextComponent: 'This field is required!',
         errorTextComponentName: 'This field is required!',
-        componentAlreadyExists: false,
+        componentAlreadyExists: true,
         selectedComponent: '',
       },
     };
@@ -178,7 +178,7 @@ export default class Projects extends React.Component {
   render() {
     console.log('render projects');
     let actions;
-    if (this.state.newComponentDialog.componentAlreadyExists) {
+    if (this.state.newComponentDialog.componentAlreadyExists || this.state.newComponentDialog.selectedComponent === '') {
       actions = [
         <FlatButton
                   label="Cancel"
@@ -228,13 +228,13 @@ export default class Projects extends React.Component {
         <ContentAdd />
       </FloatingActionButton></div>
       <div>
-        <Dialog style={styles.dialog}
+        <Dialog
             title="Create a new TodoList"
             actions={actions}
             modal={false}
             open={this.state.dialogOpen}
             onRequestClose={this.handleCloseDialog}>
-          <Table height='200px'
+          <Table height='210px'
                  selectable={false}><TableBody
               displayRowCheckbox={false}><TableRow displayBorder={false}>
             <TableRowColumn>
