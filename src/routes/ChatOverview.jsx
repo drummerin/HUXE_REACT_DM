@@ -41,15 +41,13 @@ export default class Chat extends React.Component {
 
   componentDidMount() {
     this.getAllUser();
-
-    firebase.auth().onAuthStateChanged((user) => {
-      this.getAllUser();
-      this.render();
-    });
+    this.render();
   }
 
   componentDidUpdate() {
     window.scrollTo(0, document.body.scrollHeight);
+    this.getAllUser();
+    this.render();
   }
 
   componentWillUnmount() {
