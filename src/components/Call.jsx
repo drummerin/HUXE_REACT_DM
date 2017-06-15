@@ -77,6 +77,7 @@ export default class Call extends React.Component {
     });
 
     on('call', (from) => {
+      console.log('ringing');
       this.setState({
         callState: CALL_STATE_RINGING,
         remoteName: from,
@@ -143,6 +144,7 @@ export default class Call extends React.Component {
     this.connection.addStream(this.stream);
 
     if (this.state.callState === CALL_STATE_DIALING) {
+      console.log('dialing');
       this.connection.createOffer((sessionDescription) => {
         this.connection.setLocalDescription(sessionDescription);
         send('offer', this.state.remoteName, sessionDescription);
@@ -196,7 +198,7 @@ export default class Call extends React.Component {
       callState: CALL_STATE_NONE,
       remoteName: null,
     });
-    this.connection = null;
+    
     send('hangup', this.state.remoteName);
   }
 

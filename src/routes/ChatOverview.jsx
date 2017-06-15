@@ -2,13 +2,13 @@
 
 import React from 'react';
 import * as firebase from 'firebase';
-import { List, ListItem } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
 import IconButton from 'material-ui/IconButton';
 import { green600, grey300 } from 'material-ui/styles/colors';
+import Call from '../components/Call.jsx';
 
 
 const styles = {
@@ -28,7 +28,6 @@ const styles = {
   },
 };
 
-
 export default class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -40,8 +39,13 @@ export default class Chat extends React.Component {
   static propTypes = {
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.getAllUser();
+
+    firebase.auth().onAuthStateChanged((user) => {
+      this.getAllUser();
+      this.render();
+    });
   }
 
   componentDidUpdate() {
@@ -52,6 +56,25 @@ export default class Chat extends React.Component {
   }
 
   getAllUser() {
+    /* const userListRef = firebase.database().ref('users');
+    const myUserRef = userListRef.push();
+
+    // Monitor connection state on browser tab
+    firebase.database().ref('.info/connected')
+          .on(
+              'value', (snap) => {
+                if (snap.val()) {
+                      // if we lose network then remove this user from the list
+                  myUserRef.onDisconnect().remove();
+                      // set user's online status
+                  console.log(snap.val());
+                } else {
+                      // client has lost network
+                  console.log(snap.val());
+                }
+              },
+          ); */
+
     const users = [];
     firebase.database().ref('users').once('value').then((snapshot) => {
       snapshot.forEach((childSnapshot) => {
@@ -63,6 +86,10 @@ export default class Chat extends React.Component {
         users,
       });
     });
+  }
+
+  startCall(name) {
+    this.Call.startCall(name);
   }
 
   render() {
@@ -80,7 +107,8 @@ export default class Chat extends React.Component {
                         <IconButton style={styles.iconButton}>
                           <CommunicationChatBubble color={green600}/>
                         </IconButton>
-                           <IconButton style={styles.iconButton}>
+                           <IconButton style={styles.iconButton}
+                                       onTouchTap={() => this.startCall(user.name)}>
                              <CommunicationCall color={green600}/>
                            </IconButton>
                     </div>
@@ -96,6 +124,8 @@ export default class Chat extends React.Component {
         </div>
       </Paper>
       </Paper>
+
+        <Call ref={call => (this.Call = call)}/>
     </div>;
   }
 }
