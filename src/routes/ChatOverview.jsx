@@ -14,7 +14,7 @@ import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { green600, grey300 } from 'material-ui/styles/colors';
 import Call from '../components/Call.jsx';
-
+import { on, off, send } from '../ws';
 
 const styles = {
   container: {
@@ -67,6 +67,7 @@ export default class Chat extends React.Component {
           this.setState({
             curUser: snapshot.val().name,
           });
+          send('join', 'all', this.state.curUser);
         });
 
         this.getAllUser();
@@ -120,11 +121,11 @@ export default class Chat extends React.Component {
     });
   }
 
-  /* startCall(name) {
+  startCall(name) {
     this.Call.startCall(name);
-  } */
+  }
 
-  start() {
+/*  start() {
     console.log('Requesting local stream');
 
     navigator.mediaDevices.getUserMedia({
@@ -318,7 +319,7 @@ export default class Chat extends React.Component {
 
   getName(pc) {
     return (pc === this.pc1) ? 'pc1' : 'pc2';
-  }
+  } */
 
   hangup() {
     this.pc1.getVideoTracks()[0].stop();
@@ -342,7 +343,7 @@ export default class Chat extends React.Component {
                                             <CommunicationChatBubble color={green600}/>
                                         </IconButton>
                                         <IconButton style={styles.iconButton}
-                                                    onTouchTap={() => this.call()}
+                                                    onTouchTap={() => this.startCall(user.name)}
                                                     disabled={this.state.call}>
                                             <CommunicationCall color={green600}/>
                                         </IconButton>
@@ -367,16 +368,16 @@ export default class Chat extends React.Component {
                 <br/>
                 <video src={this.state.remoteVideo} autoPlay="autoPlay"/>
 
-                <div>
+                {/* <div>
                     <button id="startButton">Start</button>
                     <button id="callButton">Call</button>
                     <button id="hangupButton">Hang Up</button>
-                </div>
+                </div>*/ }
                 < Call ref = {call => (this.Call = call)}/>
             </Paper>
              :
             <Paper style={styles.loginMessage}>
-                <div style={{ marginBottom: 15}}>You are not logged in. Please log in first.</div>
+                <div style={{ marginBottom: 15 }}>You are not logged in. Please log in first.</div>
                 <Link to="/login">
                     <RaisedButton label="login"
                             primary={true}/>
