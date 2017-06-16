@@ -62,8 +62,6 @@ export default class Chat extends React.Component {
 
   componentDidMount() {
     this.isUserLoggedIn();
-    this.getAllUser();
-    this.render();
   }
 
   isUserLoggedIn() {
@@ -87,46 +85,11 @@ export default class Chat extends React.Component {
 
   componentDidUpdate() {
     window.scrollTo(0, document.body.scrollHeight);
-    this.getAllUser();
-    this.render();
   }
 
   componentWillUnmount() {
   }
-
-  getAllUser() {
-    /* const userListRef = firebase.database().ref('users');
-    const myUserRef = userListRef.push();
-
-    // Monitor connection state on browser tab
-    firebase.database().ref('.info/connected')
-          .on(
-              'value', (snap) => {
-                if (snap.val()) {
-                      // if we lose network then remove this user from the list
-                  myUserRef.onDisconnect().remove();
-                      // set user's online status
-                  console.log(snap.val());
-                } else {
-                      // client has lost network
-                  console.log(snap.val());
-                }
-              },
-          ); */
-
-    const users = [];
-    firebase.database().ref('users').once('value').then((snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        const childData = childSnapshot.val();
-        users.push({ name: childData.name });
-      });
-    }).then(() => {
-      this.setState({
-        users,
-      });
-    });
-  }
-
+    
   startCall(name) {
     this.Call.startCall(name);
   }
