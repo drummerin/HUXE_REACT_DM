@@ -7,6 +7,7 @@ import EditButton from 'material-ui/svg-icons/image/edit';
 import OKButton from 'material-ui/svg-icons/navigation/check';
 import ImageButton from 'material-ui/svg-icons/image/image';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import ColorIcon from 'material-ui/svg-icons/image/color-lens';
 import IconButton from 'material-ui/IconButton';
 import { SketchPicker } from 'react-color';
 import { updateProject as updateProjectAction } from '../actions';
@@ -22,7 +23,7 @@ const styles = {
     margin: '10px',
     padding: '0 15px 15px 15px',
     width: '45px',
-    height: '300px',
+    height: '150px',
     float: 'left',
     borderRadius: '20px',
   },
@@ -50,7 +51,7 @@ const styles = {
   },
   popover: {
     position: 'absolute',
-    top: '50%',
+    top: '20%',
     left: '50%',
     zIndex: '2',
   },
@@ -135,7 +136,6 @@ export default class Draw extends React.Component {
     this.ctx.fillRect(0, 0, 260, 240);
     this.ctx.closePath();
 
-    // this.setDefaultAppearance();
     const canvas = this.canvas;
     const context = canvas.getContext('2d');
     const imageObj = new Image();
@@ -179,8 +179,6 @@ export default class Draw extends React.Component {
   }
 
   onMouseDown = (event) => {
-    // this.ctx.lineWidth = this.state.lineThickness;
-    // this.ctx.strokeStyle = this.state.lineColor;
     this.setAppearance();
     this.setState({
       isMouseDown: true,
@@ -218,7 +216,6 @@ export default class Draw extends React.Component {
         componentName: this.props.component.componentName,
         componentType: this.props.component.componentType,
         drawContent: image.src });
-      // this.ctx.clearRect(0, 0, 260, 240);
       this.updateProjectAction(this.props.project);
     }
   };
@@ -241,7 +238,6 @@ export default class Draw extends React.Component {
             left,
             top,
         ] = coordinates;
-    // this.ctx.strokeStyle = color;
     this.ctx.lineTo(
             left - this.bcr.left,
             top - this.bcr.top,
@@ -255,7 +251,28 @@ export default class Draw extends React.Component {
   };
 
   changeColor= () => {
-    this.setState({ selectingColor: true });
+    this.setState({ selectingColor: true,
+      lineColor: this.state.selectedColor,
+      lineThickness: 1,
+      blur: true });
+  };
+  static componentToHex(c) {
+    const hex = c.toString(16);
+    return hex.length === 1 ? `0${hex}` : hex;
+  }
+  static rgbToHex(color) {
+    return `#${Draw.componentToHex(color.rgb.r)}${Draw.componentToHex(color.rgb.g)}${Draw.componentToHex(color.rgb.b)}`;
+  }
+
+  handleColorChange = (color) => {
+    console.log(color);
+    console.log(color.rgb);
+    console.log(Draw.rgbToHex(color));
+    this.setState({ selectedColor: Draw.rgbToHex(color), lineColor: Draw.rgbToHex(color) });
+  };
+
+  handleClose = () => {
+    this.setState({ selectingColor: false });
   };
 
   render() {
@@ -298,14 +315,15 @@ export default class Draw extends React.Component {
             <DeleteIcon color='#DDDDDD'
                         hoverColor={this.props.project.projectColor} /> </IconButton>
           <IconButton onTouchTap={() => this.changeColor()} style={styles.editDrawButton}>
-            <ImageButton color='#DDDDDD'
+            <ColorIcon color={this.state.selectedColor}
                          hoverColor={this.props.project.projectColor} /> </IconButton></div>
         </Paper> :
           <div></div>
          }
         { this.state.selectingColor ? <div style={ styles.popover }>
               <div style={ styles.cover } onClick={ this.handleClose }/>
-              <SketchPicker color={ this.state.color } onChange={ this.handleChange } />
+              <SketchPicker color={ this.state.selectedColor }
+                            onChange={ this.handleColorChange } />
             </div> : null }</div>;
   }
 
