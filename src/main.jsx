@@ -24,9 +24,14 @@ const config = {
   storageBucket: 'planit-e2048.appspot.com',
   messagingSenderId: '747737733905',
 };
-const fb = firebase.initializeApp(config).database().ref('projects');
+const fb = firebase.initializeApp(config);
 
-fb.on('value', (snapshot) => {
+const fbDb = fb.database().ref('projects');
+
+const fbAuth = fb.auth();
+let curUser = null;
+
+fbDb.on('value', (snapshot) => {
   console.log('firebase data changed');
   let array = [];
   if (projects.length > 0) {
@@ -47,6 +52,29 @@ fb.on('value', (snapshot) => {
   ReactDOM.render(
         <Provider store={store}>
             <App />
+        </Provider>,
+        root,
+    );
+});
+
+fbAuth.onAuthStateChanged((user) => {
+  if (user) {
+    curUser = user.displayName;
+    console.log(`user changed ${user.displayName}`);
+    fb.database().ref(`/users/${user.displayName}`).set({
+      name: user.displayName,
+    });
+  } else {
+    fb.database().ref(`/users/${curUser}`).set({
+      name: null,
+    });
+    curUser = null;
+    console.log('no user logged in');
+  }
+
+  ReactDOM.render(
+        <Provider store={store}>
+          <App />
         </Provider>,
         root,
     );

@@ -1,9 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 import React from 'react';
-import {
-    Link,
-} from 'react-router-dom';
 import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
@@ -38,10 +35,14 @@ const styles = {
   ownMessages: {
     backgroundColor: 'green',
   },
-  textFieldPaper: {
+  usernameTextfield: {
     padding: 10,
     margin: 10,
     width: 350,
+  },
+  textfield: {
+    padding: 10,
+    margin: 10,
   },
   messages: {
     width: 500,
@@ -83,7 +84,7 @@ export default class Chat extends React.Component {
   };
 
   componentDidMount() {
-    this.isUserLoggedIn();
+    // this.isUserLoggedIn();
 
     on('chat', (from, payload) => {
       this.setState({
@@ -221,7 +222,6 @@ export default class Chat extends React.Component {
     const ownMessageColor = '#ddfbff';
 
     return <div>
-        { this.state.curUser ?
             <Paper style={styles.container}>
                 <Paper style={styles.userPaper} zDepth={2}>
                     <Subheader>User</Subheader>
@@ -254,7 +254,7 @@ export default class Chat extends React.Component {
                 </Paper>
 
                 { !this.state.name ?
-                <Paper style={styles.textFieldPaper} zDepth={2}>
+                <Paper style={styles.usernameTextfield} zDepth={2}>
                 <form onSubmit={evt => this.setName(evt)}>
                     <TextField floatingLabelText="Enter a username"
                                fullWidth={true}
@@ -281,16 +281,14 @@ export default class Chat extends React.Component {
                                 <div key={chatItem.id} >
                                     <Paper style={styles.message}>
                                         <div style={styles.sender}>
-                                            <a href="#"
-                                               style={styles.name}
-                                               onClick={() => this.startCall(chatItem.name)}>
+                                            <div style={styles.name}>
                                             {chatItem.name}
-                                        </a></div>
+                                        </div></div>
                                         {chatItem.message}
                                     </Paper>
                                 </div>
                         ))}
-                        <Paper style={styles.textFieldPaper} zDepth={2}>
+                        <Paper style={styles.textfield} zDepth={2}>
                             <form onSubmit={evt => this.sendMessage(evt)}>
                                 <TextField floatingLabelText="Write something"
                                            fullWidth={true}
@@ -302,15 +300,6 @@ export default class Chat extends React.Component {
                     </Paper> : null }
                 < Call ref = {call => (this.Call = call)}/>
             </Paper>
-             :
-            <Paper style={styles.loginMessage}>
-                <div style={{ marginBottom: 15 }}>You are not logged in. Please log in first.</div>
-                <Link to="/login">
-                    <RaisedButton label="login"
-                            primary={true}/>
-                </Link>
-            </Paper>
-        }
     </div>;
   }
 }

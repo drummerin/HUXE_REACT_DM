@@ -165,7 +165,7 @@ export default class Signup extends React.Component {
                                   onTouchTap={() => { this.addUser(); }}
                     />
 
-                    <Link to="/login">
+                    <Link to="/">
                         <RaisedButton label="back"
                         />
                     </Link>

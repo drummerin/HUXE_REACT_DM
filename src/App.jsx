@@ -101,7 +101,8 @@ const routes = [
     icon: <ChatIcon/>,
   },
   {
-    link: '/login',
+    link: '/',
+    exact: true,
     title: 'Login',
     component: Login,
     icon: <InfoIcon/>,
@@ -229,20 +230,15 @@ export default class App extends React.Component {
   }
 
   logout() {
-    const userId = firebase.auth().currentUser.uid;
-    firebase.database().ref(`users/${userId}`).update({
-      name: null,
-    }).then(() => {
-      firebase.auth().signOut().then(() => {
-        console.log('signout');
-        this.setState({
-          user: null,
-        });
-        this.closeDrawer();
-              // this.props.history.push('/login');
-      }).catch((error) => {
-        console.log(`logout error: ${error}`);
+    firebase.auth().signOut().then(() => {
+      console.log('signout');
+      this.setState({
+        user: null,
       });
+      this.closeDrawer();
+              // this.props.history.push('/login');
+    }).catch((error) => {
+      console.log(`logout error: ${error}`);
     });
   }
 
@@ -441,6 +437,7 @@ export default class App extends React.Component {
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
                   <MenuHeader project={this.props.project}/>
+                  { this.state.user ?
                   <List>
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
@@ -463,7 +460,17 @@ export default class App extends React.Component {
                               primaryText="Abmelden"
                               leftIcon={<LogoutIcon/>}
                               onTouchTap={() => this.logout()}/>
-                  </List>
+                  </List> : <List>
+                          {routes.map(route => (
+                              route.component === Login || route.component === Signup ?
+                                  <Link to={route.link} key={route.link} style={styles.menuLink}>
+                                    <ListItem key={route.title}
+                                              primaryText={route.title}
+                                              leftIcon={route.icon}
+                                              onTouchTap={() => this.closeDrawer()}/>
+                                  </Link> : null
+                          ))}
+                      </List> }
               </Drawer>
                 <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
                     <AppBar
@@ -475,6 +482,7 @@ export default class App extends React.Component {
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                     <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
                 </Drawer>
+                { this.state.user ?
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
                           <Route exact={route.exact}
@@ -483,7 +491,15 @@ export default class App extends React.Component {
                              component={route.component}/>
                   ))}
                   <Route path={'/projects'} key={'/projects'} component={Projects}/>
-              </div>
+              </div> : <div style={{ ...styles.content, paddingLeft }}>
+                        {routes.map(route => (
+                            route.component === Login || route.component === Signup ?
+                            <Route exact={route.exact}
+                                   key={route.link}
+                                   path={route.link}
+                                   component={route.component}/> : null
+                        ))}
+                    </div> }
                 <div>
                     <Dialog
                         title="Create a new Project"
