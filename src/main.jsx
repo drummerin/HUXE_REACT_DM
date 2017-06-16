@@ -74,7 +74,7 @@ fbAuth.onAuthStateChanged((user) => {
 
   ReactDOM.render(
         <Provider store={store}>
-          <App />
+          <App user={curUser}/>
         </Provider>,
         root,
     );

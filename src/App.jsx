@@ -163,6 +163,7 @@ export default class App extends React.Component {
     dispatch: PropTypes.func,
     data: PropTypes.object,
     history: PropTypes.object,
+    user: PropTypes.string,
   };
 
   static contextTypes = {
@@ -423,6 +424,8 @@ export default class App extends React.Component {
           />,
     ];
 
+
+    console.log(`...${this.props.user}`);
 
     return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
