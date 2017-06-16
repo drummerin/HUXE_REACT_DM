@@ -1,6 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 import React from 'react';
+import {
+    Link,
+} from 'react-router-dom';
 import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
@@ -8,6 +11,7 @@ import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bu
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
 import CommunicationCallEnd from 'material-ui/svg-icons/communication/call-end';
 import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import { green600, grey300 } from 'material-ui/styles/colors';
 import Call from '../components/Call.jsx';
 
@@ -17,7 +21,7 @@ const styles = {
     padding: 10,
   },
   userPaper: {
-    width: 300,
+    width: 350,
     margin: 10,
   },
   user: {
@@ -27,25 +31,21 @@ const styles = {
     marginLeft: 10,
     marginRight: 10,
   },
+  loginMessage: {
+    padding: 15,
+  },
 };
 
-const pcConfig = {
-    'iceServers': [{
-        'urls': 'stun:stun.l.google.com:19302'
-    }]
+const offerOptions = {
+  offerToReceiveAudio: 1,
+  offerToReceiveVideo: 1,
 };
-
-const sdpConstraints = {
-    offerToReceiveAudio: true,
-    offerToReceiveVideo: true
-};
-
-const socket = io.connect();
 
 export default class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      curUser: null,
       users: null,
       localVideo: null,
       remoteVideo: null,
@@ -61,13 +61,26 @@ export default class Chat extends React.Component {
   };
 
   componentDidMount() {
-    this.getAllUser();
-    this.render();
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        firebase.database().ref(`users/${user.uid}`).once('value').then((snapshot) => {
+          this.setState({
+            curUser: snapshot.val().name,
+          });
+        });
+
+        this.getAllUser();
+        this.render();
+      } else {
+        this.setState({
+          curUser: null,
+        });
+      }
+    });
   }
 
   componentDidUpdate() {
     window.scrollTo(0, document.body.scrollHeight);
-    this.getAllUser();
     this.render();
   }
 
@@ -314,52 +327,62 @@ export default class Chat extends React.Component {
 
   render() {
     return <div>
-
-      <Paper style={styles.container}>
-      <Paper style={styles.userPaper} zDepth={2}>
-        <Subheader>User</Subheader>
-        <div>
-            { this.state.users ?
-                this.state.users.map(user => (
-                     user.online ?
-                         <div key={user.name} style={styles.user}>
-                           <span style={{ marginRight: 10 }}>{user.name}</span>
-                        <IconButton style={styles.iconButton} onTouchTap={() => this.start()}>
-                          <CommunicationChatBubble color={green600}/>
-                        </IconButton>
-                           <IconButton style={styles.iconButton}
-                                       onTouchTap={() => this.call()}
-                                       disabled={this.state.call}>
-                             <CommunicationCall color={green600}/>
-                           </IconButton>
-                             <IconButton style={styles.iconButton}
-                                         onTouchTap={() => this.hangup()}
-                                         disabled={!this.state.call}>
-                                 <CommunicationCallEnd color={green600}/>
-                             </IconButton>
+        { this.state.curUser ?
+            <Paper style={styles.container}>
+                <Paper style={styles.userPaper} zDepth={2}>
+                    <Subheader>User</Subheader>
+                    <div>
+                        { this.state.users ?
+                            this.state.users.map(user => (
+                                user.online ?
+                                    <div key={user.name} style={styles.user}>
+                                        <span style={{ marginRight: 10 }}>{user.name}</span>
+                                        <IconButton style={styles.iconButton}
+                                                    onTouchTap={() => this.start()}>
+                                            <CommunicationChatBubble color={green600}/>
+                                        </IconButton>
+                                        <IconButton style={styles.iconButton}
+                                                    onTouchTap={() => this.call()}
+                                                    disabled={this.state.call}>
+                                            <CommunicationCall color={green600}/>
+                                        </IconButton>
+                                        <IconButton style={styles.iconButton}
+                                                    onTouchTap={() => this.hangup()}
+                                                    disabled={!this.state.call}>
+                                            <CommunicationCallEnd color={green600}/>
+                                        </IconButton>
+                                    </div>
+                                    :
+                                    <div key={user.name} style={styles.user}>
+                                        <span style={{ marginRight: 10 }}>{user.name}</span>
+                                        <IconButton style={styles.iconButton}>
+                                            <CommunicationChatBubble color={grey300}/>
+                                        </IconButton>
+                                    </div>
+                            )) : 'no user'
+                        }
                     </div>
-                     :
-                         <div key={user.name} style={styles.user}>
-                           <span style={{ marginRight: 10 }}>{user.name}</span>
-                           <IconButton style={styles.iconButton}>
-                             <CommunicationChatBubble color={grey300}/>
-                         </IconButton>
-                         </div>
-                )) : 'no user'
-            }
-        </div>
-      </Paper>
-          <video src={this.state.localVideo} autoPlay="autoPlay" /> <br/>
-          <video src={this.state.remoteVideo} autoPlay="autoPlay" />
+                </Paper>
+                <video src={this.state.localVideo} autoPlay="autoPlay"/>
+                <br/>
+                <video src={this.state.remoteVideo} autoPlay="autoPlay"/>
 
-          <div>
-              <button id="startButton">Start</button>
-              <button id="callButton">Call</button>
-              <button id="hangupButton">Hang Up</button>
-          </div>
-      </Paper>
-
-        <Call ref={call => (this.Call = call)}/>
+                <div>
+                    <button id="startButton">Start</button>
+                    <button id="callButton">Call</button>
+                    <button id="hangupButton">Hang Up</button>
+                </div>
+                < Call ref = {call => (this.Call = call)}/>
+            </Paper>
+             :
+            <Paper style={styles.loginMessage}>
+                <div style={{ marginBottom: 15}}>You are not logged in. Please log in first.</div>
+                <Link to="/login">
+                    <RaisedButton label="login"
+                            primary={true}/>
+                </Link>
+            </Paper>
+        }
     </div>;
   }
 }
