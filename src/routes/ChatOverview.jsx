@@ -61,27 +61,33 @@ export default class Chat extends React.Component {
   };
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        firebase.database().ref(`users/${user.uid}`).once('value').then((snapshot) => {
-          this.setState({
-            curUser: snapshot.val().name,
-          });
-          send('join', 'all', this.state.curUser);
-        });
+    this.isUserLoggedIn();
+    this.getAllUser();
+    this.render();
+  }
 
-        this.getAllUser();
-        this.render();
-      } else {
-        this.setState({
-          curUser: null,
-        });
-      }
-    });
+  isUserLoggedIn() {
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+      this.setState({
+        curUser: user.displayName,
+      });
+      send('join', 'all', this.state.curUser);
+    } else {
+      this.setState({
+        curUser: null,
+      });
+    }
+  }
+
+  componentWillMount() {
+
   }
 
   componentDidUpdate() {
     window.scrollTo(0, document.body.scrollHeight);
+    this.getAllUser();
     this.render();
   }
 
@@ -112,9 +118,9 @@ export default class Chat extends React.Component {
     firebase.database().ref('users').once('value').then((snapshot) => {
       snapshot.forEach((childSnapshot) => {
         const childData = childSnapshot.val();
-        users.push({ name: childData.name,
-          online: childData.online });
+        users.push({ name: childData.name });
       });
+    }).then(() => {
       this.setState({
         users,
       });
@@ -322,8 +328,8 @@ export default class Chat extends React.Component {
   } */
 
   hangup() {
-    this.pc1.getVideoTracks()[0].stop();
-    this.pc1.getAudioTracks()[0].stop();
+    // this.pc1.getVideoTracks()[0].stop();
+    // this.pc1.getAudioTracks()[0].stop();
   }
 
   render() {
@@ -335,7 +341,6 @@ export default class Chat extends React.Component {
                     <div>
                         { this.state.users ?
                             this.state.users.map(user => (
-                                user.online ?
                                     <div key={user.name} style={styles.user}>
                                         <span style={{ marginRight: 10 }}>{user.name}</span>
                                         <IconButton style={styles.iconButton}
@@ -351,13 +356,6 @@ export default class Chat extends React.Component {
                                                     onTouchTap={() => this.hangup()}
                                                     disabled={!this.state.call}>
                                             <CommunicationCallEnd color={green600}/>
-                                        </IconButton>
-                                    </div>
-                                    :
-                                    <div key={user.name} style={styles.user}>
-                                        <span style={{ marginRight: 10 }}>{user.name}</span>
-                                        <IconButton style={styles.iconButton}>
-                                            <CommunicationChatBubble color={grey300}/>
                                         </IconButton>
                                     </div>
                             )) : 'no user'

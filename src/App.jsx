@@ -30,9 +30,7 @@ import Dialog from 'material-ui/Dialog';
 import DatePicker from 'material-ui/DatePicker';
 import Calendar from 'material-ui/DatePicker/Calendar';
 import InputField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import {
     Table,
     TableBody,
@@ -172,15 +170,18 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log('mount');
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({
-          user: user.displayName,
-        });
-      } else {
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+      this.setState({
+        user: user.displayName,
+      });
+    } else {
+      this.setState({
+        user: null,
+      });
           // this.context.history.push('/login');
-      }
-    });
+    }
   }
 
   toggleDrawer() {
@@ -230,16 +231,18 @@ export default class App extends React.Component {
   logout() {
     const userId = firebase.auth().currentUser.uid;
     firebase.database().ref(`users/${userId}`).update({
-      online: false,
-    });
-    firebase.auth().signOut().then(() => {
-      this.setState({
-        user: null,
+      name: null,
+    }).then(() => {
+      firebase.auth().signOut().then(() => {
+        console.log('signout');
+        this.setState({
+          user: null,
+        });
+        this.closeDrawer();
+              // this.props.history.push('/login');
+      }).catch((error) => {
+        console.log(`logout error: ${error}`);
       });
-      this.closeDrawer();
-      // this.props.history.push('/login');
-    }).catch((error) => {
-      console.log(`logout error: ${error}`);
     });
   }
 

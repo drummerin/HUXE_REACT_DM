@@ -70,7 +70,6 @@ export default class Signup extends React.Component {
   addUser() {
     firebase.auth().createUserWithEmailAndPassword(this.state.user.email,
         this.state.user.password).then((user) => {
-          this.saveUser(user);
           user.updateProfile({
             displayName: this.state.user.name,
           }).then(() => {
@@ -114,13 +113,6 @@ export default class Signup extends React.Component {
       });
     }
   };
-
-  saveUser(user) {
-    firebase.database().ref(`users/${user.uid}`).set({
-      name: this.state.user.name,
-      online: true,
-    });
-  }
 
   render() {
     return <div>

@@ -202,9 +202,11 @@ export default class Call extends React.Component {
       this.connection.close();
     }
     this.connection = null;
-    this.stream.getVideoTracks()[0].stop();
-    this.stream.getAudioTracks()[0].stop();
-    this.stream = null;
+    if (this.stream) {
+      this.stream.getVideoTracks()[0].stop();
+      this.stream.getAudioTracks()[0].stop();
+      this.stream = null;
+    }
     send('hangup', this.state.remoteName);
   }
 
