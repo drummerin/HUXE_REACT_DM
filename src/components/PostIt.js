@@ -50,7 +50,6 @@ export default class PostIt extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-
   static propTypes = {
     project: PropTypes.object,
     dispatch: PropTypes.func,
@@ -58,7 +57,6 @@ export default class PostIt extends React.Component {
   };
 
   handleChange(event) {
-    console.log(`input: ${event.target.value}`);
     this.setState({ [event.target.id]: event.target.value });
   }
 
@@ -85,7 +83,6 @@ export default class PostIt extends React.Component {
   }
 
   render() {
-    console.log(this.props.component.postItText);
     return <div>
         <Paper style={styles.paper}><div style={styles.paperHeader}>
             {this.props.component.componentName}
