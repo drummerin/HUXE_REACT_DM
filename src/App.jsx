@@ -227,7 +227,7 @@ export default class App extends React.Component {
 
   logout() {
     firebase.auth().signOut().then(() => {
-      console.log('signout');
+      this.closeDrawer();
     }).catch((error) => {
       console.log(`logout error: ${error}`);
     });
@@ -443,7 +443,7 @@ export default class App extends React.Component {
                       </Link> : null
                   ))}
                     <ListItem key="logout"
-                              primaryText="Abmelden"
+                              primaryText="Logout"
                               leftIcon={<LogoutIcon/>}
                               onTouchTap={() => this.logout()}/>
                   </List> : <List>

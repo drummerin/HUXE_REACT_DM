@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 import React from 'react';
-import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
@@ -84,8 +83,6 @@ export default class Chat extends React.Component {
   };
 
   componentDidMount() {
-    // this.isUserLoggedIn();
-
     on('chat', (from, payload) => {
       this.setState({
         messages: [
@@ -111,20 +108,6 @@ export default class Chat extends React.Component {
     });
   }
 
-  isUserLoggedIn() {
-    const user = firebase.auth().currentUser;
-
-    if (user) {
-      this.setState({
-        curUser: user.displayName,
-      });
-    } else {
-      this.setState({
-        curUser: null,
-      });
-    }
-  }
-
   componentWillMount() {
 
   }
@@ -134,7 +117,6 @@ export default class Chat extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('unmount');
     this.setState({
       name: '',
       nameInput: '',
@@ -201,15 +183,6 @@ export default class Chat extends React.Component {
         },
       ],
     });
-
-    /* this.setState({
-      users: [
-        ...this.state.users,
-        {
-          name: this.state.nameInput,
-        },
-      ],
-    }); */
   }
 
   startChat() {

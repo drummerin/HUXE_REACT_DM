@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRE = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
 
 const styles = {
   logo: {
@@ -62,7 +62,9 @@ export default class Signup extends React.Component {
         password: '',
         password2: '',
       },
-      signupError: true,
+      textfieldError: true,
+      signupError: false,
+      signupErrorMessage: '',
     };
     this.passwordError = true;
     this.nameError = true;
@@ -81,10 +83,16 @@ export default class Signup extends React.Component {
           }).then(() => {
             this.props.history.push('/projects');
           }).catch((error) => {
-            console.log(error);
+            this.setState({
+              signupError: true,
+              signupErrorMessage: error.message,
+            });
           });
         }).catch((error) => {
-          console.log(error);
+          this.setState({
+            signupError: true,
+            signupErrorMessage: error.message,
+          });
         });
   }
 
@@ -131,7 +139,7 @@ export default class Signup extends React.Component {
 
     if (!this.nameError && !this.emailError && !this.passwordError) {
       this.setState({
-        signupError: false,
+        textfieldError: false,
       });
     }
   };
@@ -144,9 +152,14 @@ export default class Signup extends React.Component {
                     <h1 style={styles.headline}>Signup</h1>
                 </div>
 
+                { this.state.signupError ?
+                    <Paper style={styles.error}>
+                        {this.state.signupErrorMessage}
+                    </Paper> : null }
+
                 { this.nameError ?
                     <Paper style={styles.error}>
-                        Name fehlt
+                        Name missing
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -160,7 +173,7 @@ export default class Signup extends React.Component {
 
                 { this.emailError ?
                     <Paper style={styles.error}>
-                        Emailadresse fehlt
+                        Email missing
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -174,7 +187,7 @@ export default class Signup extends React.Component {
 
                 { this.passwordError ?
                     <Paper style={styles.error}>
-                        Passwort fehlt oder Passw&ouml;rter stimmen nicht &uuml;berein
+                        Password missing or passwords not equal
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -198,12 +211,12 @@ export default class Signup extends React.Component {
                 <div style={ styles.buttonsDiv } >
                     <RaisedButton label="sign up"
                                   primary={true}
-                                  disabled={this.state.signupError}
+                                  disabled={this.state.textfieldError}
                                   onTouchTap={() => { this.addUser(); }}
                     />
 
                     <Link to="/">
-                        <RaisedButton label="back"
+                        <RaisedButton label="Back"
                         />
                     </Link>
                 </div>
