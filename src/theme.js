@@ -32,4 +32,4 @@ export function getTheme(projectName) {
   });
 }
 
-export default getTheme('Meeting 1.6.2017');
+export default getTheme(projects[0].projectName);

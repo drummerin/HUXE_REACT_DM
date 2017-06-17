@@ -1,24 +1,9 @@
 export default [
   {
-    projectName: 'Meeting 1.6.2017',
+    projectName: 'Meeting',
     projectColor: '#00626b',
-    components: [{
-      componentName: 'compi',
-      componentType: 'Todo',
-      id: 'xdes',
-    }, {
-      componentName: 'compooo',
-      componentType: 'Toduuu',
-      id: 'ffree',
-    }],
-  },
-  {
-    projectName: 'MasterThesis',
-    projectColor: '#d87600',
-    components: [{
-      componentName: 'compoo',
-      componentType: 'Todo',
-      id: 'regfge',
-    }],
+    projectDescription: 'This is a default project',
+    projectAuthor: 'Susanne & Sophie',
+    projectDate: '19.06.2017',
   },
 ];
