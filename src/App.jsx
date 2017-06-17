@@ -23,6 +23,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
 import LogoutIcon from 'material-ui/svg-icons/action/input';
+import SignUpIcon from 'material-ui/svg-icons/action/assignment-ind'
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import ColorIcon from 'material-ui/svg-icons/image/color-lens';
@@ -88,12 +89,7 @@ const routes = [
     component: Settings,
     icon: <SettingsIcon/>,
   },
-  {
-    link: '/about',
-    title: 'Info',
-    component: About,
-    icon: <InfoIcon/>,
-  },
+
   {
     link: '/chat',
     title: 'Chat',
@@ -101,24 +97,24 @@ const routes = [
     icon: <ChatIcon/>,
   },
   {
+    link: '/about',
+    title: 'Info',
+    component: About,
+    icon: <InfoIcon/>,
+  },
+  {
     link: '/',
     exact: true,
     title: 'Login',
     component: Login,
-    icon: <InfoIcon/>,
+    icon: <LogoutIcon/>,
   },
   {
     link: '/signup',
     title: 'Signup',
     component: Signup,
-    icon: <InfoIcon/>,
+    icon: <SignUpIcon/>,
   },
-  /* {
-    link: '/todo',
-    title: 'Todo',
-    component: Todo,
-    icon: <InfoIcon/>,
-  },*/
 ];
 
 
@@ -465,7 +461,7 @@ export default class App extends React.Component {
                 <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
                     <AppBar
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-                        iconElementRight={<IconButton><DeleteIcon /></IconButton>}
+                        iconElementRight={(this.props.project.projectName !== 'Meeting') ? <IconButton><DeleteIcon /></IconButton> : null}
                         onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
                         onRightIconButtonTouchTap={() => this.handleDeleteDialogOpen()}
                     />
