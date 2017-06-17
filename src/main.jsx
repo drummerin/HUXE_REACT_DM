@@ -60,7 +60,6 @@ fbDb.on('value', (snapshot) => {
 fbAuth.onAuthStateChanged((user) => {
   if (user) {
     curUser = user.displayName;
-    console.log(`user changed ${user.displayName}`);
     fb.database().ref(`/users/${user.displayName}`).set({
       name: user.displayName,
     });
@@ -69,7 +68,6 @@ fbAuth.onAuthStateChanged((user) => {
       name: null,
     });
     curUser = null;
-    console.log('no user logged in');
   }
 
   ReactDOM.render(

@@ -213,7 +213,7 @@ export default class App extends React.Component {
 
   logout() {
     firebase.auth().signOut().then(() => {
-      console.log('signout');
+      this.closeDrawer();
     }).catch((error) => {
       console.log(`logout error: ${error}`);
     });

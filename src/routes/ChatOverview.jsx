@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 import React from 'react';
-import * as firebase from 'firebase';
 import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
@@ -118,7 +117,6 @@ export default class Chat extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('unmount');
     this.setState({
       name: '',
       nameInput: '',
