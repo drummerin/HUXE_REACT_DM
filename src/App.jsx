@@ -171,6 +171,18 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log('mount');
+
+    const fbDb = firebase.database().ref('projects');
+    fbDb.on('value', () => {
+      this.updateProjectAction(this.props.project);
+      this.setState({ dialogDeleteOpen: false });
+      console.log('updating xxx ???');
+    });
+  }
+
+
+  updateProjectAction(project) {
+    this.props.dispatch(updateProjectAction(project));
   }
 
   toggleDrawer() {
@@ -246,13 +258,6 @@ export default class App extends React.Component {
     const project = projects.find(loopProject => loopProject === name);
     if (project) {
       this.props.dispatch(setProjectAction(project));
-    }
-  }
-
-  updateProjectAction(name) {
-    const project = projects.find(loopProject => loopProject === name);
-    if (project) {
-      this.props.dispatch(updateProjectAction(project));
     }
   }
 
@@ -332,7 +337,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    console.log('rendering');
+    console.log('render APP');
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
 
     document.querySelector('html').style.backgroundColor = styles.htmlStyles.backgroundColor;
@@ -523,7 +528,7 @@ export default class App extends React.Component {
                             </TableRowColumn>
                             <TableRowColumn>
                                 <DatePicker
-                                    hintText="Date of creation."
+                                    hintText="Deadline."
                                     value={this.state.newProjectDialog.projectDate !== '' ? new Date(this.state.newProjectDialog.projectDate) : null}
                                     onChange={this.handleDateChange}/>
                             </TableRowColumn></TableRow>

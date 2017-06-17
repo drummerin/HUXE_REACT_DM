@@ -35,7 +35,7 @@ fbDb.on('value', (snapshot) => {
   console.log('firebase data changed');
   let array = [];
   if (projects.length > 0) {
-    projects.splice(2, projects.length - 2);
+    projects.splice(0, projects.length);
   }
   snapshot.forEach((childSnapshot) => {
     const childData = childSnapshot.val();
