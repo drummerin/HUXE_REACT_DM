@@ -124,7 +124,6 @@ export default class Draw extends React.Component {
   }
 
   componentDidMount() {
-    console.log('canvas MOUNTED');
     if (self && (!this.canvas.getContext || !this.canvas.getBoundingClientRect)) {
       throw new Error('HTML5 Canvas is not supported in your browser.');
     }
@@ -149,8 +148,6 @@ export default class Draw extends React.Component {
   }
 
   componentDidUpdate() {
-    // get firebase canvas content
-    console.log('draw comp updated');
     const canvas = this.canvas;
     const context = canvas.getContext('2d');
     const imageObj = new Image();
@@ -247,7 +244,6 @@ export default class Draw extends React.Component {
 
   erase = () => {
     this.setState({ lineThickness: 10, lineColor: '#ffffff', blur: false });
-    console.log('erasing??');
   };
 
   changeColor= () => {
@@ -265,9 +261,6 @@ export default class Draw extends React.Component {
   }
 
   handleColorChange = (color) => {
-    console.log(color);
-    console.log(color.rgb);
-    console.log(Draw.rgbToHex(color));
     this.setState({ selectedColor: Draw.rgbToHex(color), lineColor: Draw.rgbToHex(color) });
   };
 
@@ -276,7 +269,6 @@ export default class Draw extends React.Component {
   };
 
   render() {
-    console.log(this.props.component.postItText);
     return <div>
         <Paper style={styles.paper}><div style={styles.paperHeader}>
             {this.props.component.componentName}

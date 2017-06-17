@@ -123,7 +123,6 @@ export default class Chat extends React.Component {
     const ownMessageColor = '#ddfbff';
 
     return <div>
-      <h1>{this.constructor.name}</h1>
         {!this.state.name ?
           <Paper style={styles.container}>
             <form onSubmit={evt => this.setName(evt)}>

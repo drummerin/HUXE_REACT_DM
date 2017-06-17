@@ -54,7 +54,8 @@ export default class Login extends React.Component {
         email: '',
         password: '',
       },
-      loginError: true,
+      loginError: false,
+      passwordLength: false,
       errorMessage: 'Wrong email or password',
     };
   }
@@ -73,7 +74,11 @@ export default class Login extends React.Component {
 
     if (this.state.user.email.length > 4 && this.state.user.password.length > 4) {
       this.setState({
-        loginError: false,
+        passwordLength: true,
+      });
+    } else {
+      this.setState({
+        passwordLength: false,
       });
     }
   };
@@ -98,7 +103,7 @@ export default class Login extends React.Component {
                     <h1 style={ styles.headline }>Login</h1>
                 </div>
 
-                { this.state.loginError ?
+                { (this.state.loginError) ?
                 <Paper style={styles.error}>
                     {this.state.errorMessage}
                 </Paper> : null }
@@ -123,7 +128,7 @@ export default class Login extends React.Component {
                     <RaisedButton label="login"
                                   primary={true}
                                   onTouchTap={() => { this.login(); }}
-                                  disabled={this.state.loginError}
+                                  disabled={!this.state.passwordLength}
                                   />
 
                     <Link to="/signup">

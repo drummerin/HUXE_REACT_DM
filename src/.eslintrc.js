@@ -19,6 +19,8 @@ module.exports = {
     globals: {
         test: true,
         expect: true,
+        it: true,
+        describe: true,
     },
     rules: {
         'linebreak-style': 0,
@@ -28,13 +30,6 @@ module.exports = {
                 'getInitialState',
                 'getDefaultProps',
                 'getChildContext',
-                'componentWillMount',
-                'componentDidMount',
-                'componentWillReceiveProps',
-                'shouldComponentUpdate',
-                'componentWillUpdate',
-                'componentDidUpdate',
-                'componentWillUnmount',
             ],
         }]
     }

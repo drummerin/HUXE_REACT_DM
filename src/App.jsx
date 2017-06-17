@@ -23,7 +23,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import InfoOutlineIcon from 'material-ui/svg-icons/action/info-outline';
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder';
 import LogoutIcon from 'material-ui/svg-icons/action/input';
-import SignUpIcon from 'material-ui/svg-icons/action/assignment-ind'
+import SignUpIcon from 'material-ui/svg-icons/action/assignment-ind';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import ColorIcon from 'material-ui/svg-icons/image/color-lens';
@@ -38,7 +38,6 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
-
 import { List, ListItem } from 'material-ui/List';
 import Projects from './routes/Projects';
 import Settings from './routes/Settings';
@@ -50,8 +49,6 @@ import ProjectHeaderRight from './components/ProjectHeaderRight';
 import MenuHeader from './components/MenuHeader';
 import { setProject as setProjectAction, updateProject as updateProjectAction } from './actions';
 import projects from './projects';
-
-const colorSelected = '#3189a6';
 
 const colorList = [
   <MenuItem key={'color1'} value={'#808080'} primaryText="Gray" leftIcon={<ColorIcon color="#808080" />} />,
@@ -70,15 +67,11 @@ const styles = {
   },
   content: {
     padding: 16,
-    // maxWidth: 1000,
     transition: transitions.easeOut(null, 'padding-left', null),
     color: '#2f6fff',
   },
   menuLink: {
     textDecoration: 'none',
-  },
-  selectedProject: {
-    color: colorSelected,
   },
 };
 
@@ -136,6 +129,7 @@ export default class App extends React.Component {
       },
       dialogOpen: false,
       dialogDeleteOpen: false,
+      helpDialogOpen: false,
       newProjectDialog: {
         projectName: '',
         projectDescription: '',
@@ -191,12 +185,18 @@ export default class App extends React.Component {
   }
 
   toggleDrawerRight() {
-    this.setState({
-      drawerRight: {
-        ...this.state.drawerRight,
-        open: !this.state.drawerRight.open,
-      },
-    });
+    if (this.props.user) {
+      this.setState({
+        drawerRight: {
+          ...this.state.drawerRight,
+          open: !this.state.drawerRight.open,
+        },
+      });
+    } else {
+      this.setState({
+        helpDialogOpen: true,
+      });
+    }
   }
 
   closeDrawer() {
@@ -219,6 +219,10 @@ export default class App extends React.Component {
   };
   handleDeleteDialogClose = () => {
     this.setState({ dialogDeleteOpen: false });
+  };
+
+  handleHelpDialogClose = () => {
+    this.setState({ helpDialogOpen: false });
   };
 
   static handleTouchTapDay(event, date) {
@@ -407,6 +411,14 @@ export default class App extends React.Component {
           />,
     ];
 
+    const helpAction = [
+      <FlatButton
+            label="Got it!"
+            primary={true}
+            onTouchTap={this.handleHelpDialogClose}
+        />,
+    ];
+
 
     console.log(`...${this.props.user}`);
 
@@ -458,7 +470,8 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                <Drawer width={300} openSecondary={true} open={this.state.drawerRight.open} >
+                { this.props.user ? <Drawer width={300} openSecondary={true}
+                                            open={this.state.drawerRight.open} >
                     <AppBar
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                         iconElementRight={(this.props.project.projectName !== 'Meeting') ? <IconButton><DeleteIcon /></IconButton> : null}
@@ -467,7 +480,7 @@ export default class App extends React.Component {
                     />
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                     <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
-                </Drawer>
+                </Drawer> : null }
                 { this.props.user ?
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
@@ -545,8 +558,16 @@ export default class App extends React.Component {
                         actions={deleteActions}
                         modal={false}
                         open={this.state.dialogDeleteOpen}
-                        onRequestClose={this.handleClose}>
+                        onRequestClose={this.handleDeleteDialogClose}>
                         Are you sure that you want to delete this project?
+                    </Dialog>
+                    <Dialog
+                        title="Info"
+                        actions={helpAction}
+                        modal={false}
+                        open={this.state.helpDialogOpen}
+                        onRequestClose={this.handleHelpDialogClose}>
+                        To login, you first have to sign up!
                     </Dialog>
                 </div>
             </div>
