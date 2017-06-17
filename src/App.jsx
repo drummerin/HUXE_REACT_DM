@@ -96,19 +96,19 @@ const routesLoggedIn = [
   },
 ];
 const routesLoggedOut = [
-    {
-        link: '/',
-        exact: true,
-        title: 'Login',
-        component: Login,
-        icon: <LogoutIcon/>,
-    },
-    {
-        link: '/signup',
-        title: 'Signup',
-        component: Signup,
-        icon: <SignUpIcon/>,
-    },
+  {
+    link: '/',
+    exact: true,
+    title: 'Login',
+    component: Login,
+    icon: <LogoutIcon/>,
+  },
+  {
+    link: '/signup',
+    title: 'Signup',
+    component: Signup,
+    icon: <SignUpIcon/>,
+  },
 ];
 
 
@@ -161,13 +161,10 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    console.log('mount');
-
     const fbDb = firebase.database().ref('projects');
     fbDb.on('value', () => {
       this.updateProjectAction(this.props.project);
       this.setState({ dialogDeleteOpen: false });
-      console.log('updating xxx ???');
     });
   }
 
@@ -263,17 +260,11 @@ export default class App extends React.Component {
   }
 
   deleteProject(project) {
-    console.log(project);
-    console.log(`delete!${projects.length}`);
-    // const project = projects.find(loopProject => loopProject.projectName === name.projectName);
-    // if (project) {
-    console.log('delete');
     firebase.database().ref('projects').on('value', (projectList) => {
       projectList.forEach((childSnapshot) => {
         const childData = childSnapshot.val();
         console.log(`..${childData.projectName} .. ${project.projectName}`);
         if (childData.projectName === project.projectName) {
-          console.log('deleted???');
           childSnapshot.ref.remove();
         }
       });
@@ -325,7 +316,6 @@ export default class App extends React.Component {
   };
 
   handleColorChange= (event, index, value) => {
-    console.log(`color:${value}`);
     this.setState({
       newProjectDialog: {
         ...this.state.newProjectDialog,
@@ -415,9 +405,6 @@ export default class App extends React.Component {
         />,
     ];
 
-
-    console.log(`...${this.props.user}`);
-
     return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
             <div>
@@ -464,7 +451,7 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                { this.props.user ? <Drawer width={300} openSecondary={true}
+                { this.props.user ? <Drawer width={310} openSecondary={true}
                                             open={this.state.drawerRight.open} >
                     <AppBar
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
@@ -472,8 +459,9 @@ export default class App extends React.Component {
                         onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
                         onRightIconButtonTouchTap={() => this.handleDeleteDialogOpen()}
                     />
-                    <ProjectHeaderRight project={this.props.project.projectName}/>
-                    <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
+                    <ProjectHeaderRight project={this.props.project}/>
+                    <Calendar firstDayOfWeek={1}
+                                               onTouchTapDay={App.handleTouchTapDay}/>
                 </Drawer> : null }
                 { this.props.user ?
               <div style={{ ...styles.content, paddingLeft }}>

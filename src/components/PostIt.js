@@ -108,7 +108,5 @@ export default class PostIt extends React.Component {
         </Paper>
       </div>;
   }
-
-
 }
 

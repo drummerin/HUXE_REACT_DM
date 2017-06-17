@@ -30,6 +30,13 @@ module.exports = {
                 'getInitialState',
                 'getDefaultProps',
                 'getChildContext',
+                'componentWillMount',
+                'componentDidMount',
+                'componentWillReceiveProps',
+                'shouldComponentUpdate',
+                'componentWillUpdate',
+                'componentDidUpdate',
+                'componentWillUnmount',
             ],
         }]
     }

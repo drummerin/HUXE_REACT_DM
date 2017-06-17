@@ -13,22 +13,18 @@ const styles = {
   },
 };
 
-// dynamisch je nach ausgewähltem sender :)
-/* const MenuHeader = ({ station }) => (
-    <div style={styles.element}>
-        <img style={styles.img} src={`/logos/${station}-128-round.png`}/>
-    </div>
-);*/
-
 const MenuHeader = ({ project }) => (
     <div style={styles.element}>
-      <p>{project}</p>
+      <p>{project.projectName}</p>
       <hr/>
+        <p>Authors: {project.projectAuthor}</p>
+        <p>Description: {project.projectDescription}</p>
+        <p>Deadline: {(project.projectDate).slice(0, ((project.projectDate).indexOf('201') + 4))}</p>
     </div>
 );
 
 MenuHeader.propTypes = {
-  project: PropTypes.string.isRequired,
+  project: PropTypes.object.isRequired,
 };
 
 export default MenuHeader;
