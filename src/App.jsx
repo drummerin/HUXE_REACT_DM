@@ -171,13 +171,6 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log('mount');
-    if (!this.props.user) {
-      this.setState({
-        drawer: {
-          open: true,
-        },
-      });
-    }
   }
 
   toggleDrawer() {

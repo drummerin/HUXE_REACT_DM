@@ -8,12 +8,7 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-let nameError = true;
-let emailError = true;
-let passwordError = true;
-// const emailRE =
-// /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@
-// ((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const styles = {
   logo: {
@@ -47,6 +42,14 @@ const styles = {
     width: 180,
     margin: '15px auto',
   },
+  error: {
+    width: 250,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 25,
+    padding: 10,
+    color: 'red',
+  },
 };
 
 export default class Signup extends React.Component {
@@ -61,6 +64,9 @@ export default class Signup extends React.Component {
       },
       signupError: true,
     };
+    this.passwordError = true;
+    this.nameError = true;
+    this.emailError = true;
   }
 
   static propTypes = {
@@ -90,24 +96,40 @@ export default class Signup extends React.Component {
       },
     });
 
-    if (event.target.id === 'name' && newValue.length > 3) {
-      nameError = false;
+    if (event.target.id === 'name') {
+      if (newValue.length > 3) {
+        this.nameError = false;
+      } else {
+        this.nameError = true;
+      }
     }
 
-    if ((event.target.id === 'password' && newValue.length > 4 &&
-        newValue === this.state.user.password2) ||
-        (event.target.id === 'password2' && newValue.length > 4 &&
-        newValue === this.state.user.password)) {
-      passwordError = false;
+
+    if (event.target.id === 'password') {
+      if (newValue.length > 4 && newValue === this.state.user.password2) {
+        this.passwordError = false;
+      } else {
+        this.passwordError = true;
+      }
     }
 
-    if (event.target.id === 'email' && newValue.length > 4) {
-      // if (emailRE.test(newValue)) {
-      emailError = false;
-      // }
+    if (event.target.id === 'password2') {
+      if (newValue.length > 4 && newValue === this.state.user.password) {
+        this.passwordError = false;
+      } else {
+        this.passwordError = true;
+      }
     }
 
-    if (!nameError && !emailError && !passwordError) {
+    if (event.target.id === 'email') {
+      if (newValue.length > 4 && emailRE.test(newValue)) {
+        this.emailError = false;
+      } else {
+        this.emailError = true;
+      }
+    }
+
+    if (!this.nameError && !this.emailError && !this.passwordError) {
       this.setState({
         signupError: false,
       });
@@ -122,6 +144,11 @@ export default class Signup extends React.Component {
                     <h1 style={styles.headline}>Signup</h1>
                 </div>
 
+                { this.nameError ?
+                    <Paper style={styles.error}>
+                        Name fehlt
+                    </Paper> : null }
+
                 <div style={styles.inline}>
                     <TextField floatingLabelText="Name"
                                value={this.state.user.name}
@@ -131,6 +158,11 @@ export default class Signup extends React.Component {
                     />
                 </div>
 
+                { this.emailError ?
+                    <Paper style={styles.error}>
+                        Emailadresse fehlt
+                    </Paper> : null }
+
                 <div style={styles.inline}>
                     <TextField floatingLabelText="Email"
                                value={this.state.user.email}
@@ -139,6 +171,11 @@ export default class Signup extends React.Component {
                                style={styles.textField}
                     />
                 </div>
+
+                { this.passwordError ?
+                    <Paper style={styles.error}>
+                        Passwort fehlt oder Passw&ouml;rter stimmen nicht &uuml;berein
+                    </Paper> : null }
 
                 <div style={styles.inline}>
                     <TextField floatingLabelText="Password"

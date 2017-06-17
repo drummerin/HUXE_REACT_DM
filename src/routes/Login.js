@@ -55,6 +55,7 @@ export default class Login extends React.Component {
         password: '',
       },
       loginError: true,
+      errorMessage: 'Email oder Passwort falsch',
     };
   }
 
@@ -80,20 +81,13 @@ export default class Login extends React.Component {
   login() {
     firebase.auth().signInWithEmailAndPassword(this.state.user.email,
         this.state.user.password).then(() => {
-          // this.loginError = false;
           this.props.history.push('/projects');
         }).catch((error) => {
             // Handle Errors here.
-          const errorCode = error.code;
-          // const errorMessage = error.message;
-
-          if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email') {
-            // this.loginError = true;
-            // this.errorMsg = 'Email oder Passwort falsch!';
-          } else {
-            // this.loginError = true;
-            // this.errorMsg = errorMessage;
-          }
+          this.setState({
+            loginError: true,
+            password: '',
+          });
           console.log(error);
         });
   }
@@ -108,7 +102,7 @@ export default class Login extends React.Component {
 
                 { this.state.loginError ?
                 <Paper style={styles.error}>
-                   Email oder Passwort fehlt
+                    {this.state.errorMessage}
                 </Paper> : null }
 
                 <div style={styles.inline}>
