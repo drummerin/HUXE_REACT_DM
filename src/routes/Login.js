@@ -55,7 +55,7 @@ export default class Login extends React.Component {
         password: '',
       },
       loginError: true,
-      errorMessage: 'Email oder Passwort falsch',
+      errorMessage: 'Wrong email or password',
     };
   }
 

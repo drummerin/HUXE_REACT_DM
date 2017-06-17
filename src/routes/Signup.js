@@ -159,7 +159,7 @@ export default class Signup extends React.Component {
 
                 { this.nameError ?
                     <Paper style={styles.error}>
-                        Name fehlt
+                        Name missing
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -173,7 +173,7 @@ export default class Signup extends React.Component {
 
                 { this.emailError ?
                     <Paper style={styles.error}>
-                        Emailadresse fehlt
+                        Email missing
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -187,7 +187,7 @@ export default class Signup extends React.Component {
 
                 { this.passwordError ?
                     <Paper style={styles.error}>
-                        Passwort fehlt oder Passw&ouml;rter stimmen nicht &uuml;berein
+                        Password missing or passwords not equal
                     </Paper> : null }
 
                 <div style={styles.inline}>
@@ -216,7 +216,7 @@ export default class Signup extends React.Component {
                     />
 
                     <Link to="/">
-                        <RaisedButton label="back"
+                        <RaisedButton label="Back"
                         />
                     </Link>
                 </div>
