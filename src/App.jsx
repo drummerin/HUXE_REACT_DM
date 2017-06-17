@@ -75,14 +75,13 @@ const styles = {
   },
 };
 
-const routes = [
+const routesLoggedIn = [
   {
     link: '/settings',
     title: 'Settings',
     component: Settings,
     icon: <SettingsIcon/>,
   },
-
   {
     link: '/chat',
     title: 'Chat',
@@ -95,19 +94,21 @@ const routes = [
     component: About,
     icon: <InfoIcon/>,
   },
-  {
-    link: '/',
-    exact: true,
-    title: 'Login',
-    component: Login,
-    icon: <LogoutIcon/>,
-  },
-  {
-    link: '/signup',
-    title: 'Signup',
-    component: Signup,
-    icon: <SignUpIcon/>,
-  },
+];
+const routesLoggedOut = [
+    {
+        link: '/',
+        exact: true,
+        title: 'Login',
+        component: Login,
+        icon: <LogoutIcon/>,
+    },
+    {
+        link: '/signup',
+        title: 'Signup',
+        component: Signup,
+        icon: <SignUpIcon/>,
+    },
 ];
 
 
@@ -280,8 +281,6 @@ export default class App extends React.Component {
     // }
 
     this.props.dispatch(setProjectAction(projects[0]));
-
-    console.log(`delete!${projects.length}`);
   }
 
   handleChange = (event, newValue) => {
@@ -295,7 +294,6 @@ export default class App extends React.Component {
     });
     projects.forEach((project) => {
       if (project.projectName === newValue) {
-        console.log('jumps into checking TRUE');
         this.setState({
           newProjectDialog: {
             ...this.state.newProjectDialog,
@@ -337,7 +335,6 @@ export default class App extends React.Component {
   };
 
   render() {
-    console.log('render APP');
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
 
     document.querySelector('html').style.backgroundColor = styles.htmlStyles.backgroundColor;
@@ -362,7 +359,6 @@ export default class App extends React.Component {
         primaryText="New Project"
         leftIcon={<NewProjectIcon/>}
         onTouchTap={() => this.handleOpenDialog() }/>);
-
 
     let actions;
     if (this.state.newProjectDialog.projectAlreadyExists) {
@@ -445,28 +441,26 @@ export default class App extends React.Component {
                                 primaryTogglesNestedList={true}
                                 nestedItems={ renderedProjectList }
                       /></Link>
-                  {routes.map(route => (
-                      route.component !== Login && route.component !== Signup ?
+                  {routesLoggedIn.map(route => (
                       <Link to={route.link} key={route.link} style={styles.menuLink}>
                         <ListItem key={route.title}
                                   primaryText={route.title}
                                   leftIcon={route.icon}
                                   onTouchTap={() => this.closeDrawer()}/>
-                      </Link> : null
+                      </Link>
                   ))}
                     <ListItem key="logout"
                               primaryText="Logout"
                               leftIcon={<LogoutIcon/>}
                               onTouchTap={() => this.logout()}/>
                   </List> : <List>
-                          {routes.map(route => (
-                              route.component === Login || route.component === Signup ?
+                          {routesLoggedOut.map(route => (
                                   <Link to={route.link} key={route.link} style={styles.menuLink}>
                                     <ListItem key={route.title}
                                               primaryText={route.title}
                                               leftIcon={route.icon}
                                               onTouchTap={() => this.closeDrawer()}/>
-                                  </Link> : null
+                                  </Link>
                           ))}
                       </List> }
               </Drawer>
@@ -483,20 +477,20 @@ export default class App extends React.Component {
                 </Drawer> : null }
                 { this.props.user ?
               <div style={{ ...styles.content, paddingLeft }}>
-                  {routes.map(route => (
+                  {routesLoggedIn.map(route => (
                           <Route exact={route.exact}
                              key={route.link}
                              path={route.link}
                              component={route.component}/>
                   ))}
                   <Route path={'/projects'} key={'/projects'} component={Projects}/>
+                  <Route path={'/'} exact={true} key={'/projectsDefault'} component={Projects}/>
               </div> : <div style={{ ...styles.content, paddingLeft }}>
-                        {routes.map(route => (
-                            route.component === Login || route.component === Signup ?
+                        {routesLoggedOut.map(route => (
                             <Route exact={route.exact}
                                    key={route.link}
                                    path={route.link}
-                                   component={route.component}/> : null
+                                   component={route.component}/>
                         ))}
                     </div> }
                 <div>
