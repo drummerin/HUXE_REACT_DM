@@ -36,6 +36,14 @@ const styles = {
     width: 180,
     margin: ' 15px auto',
   },
+  error: {
+    width: 250,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 25,
+    padding: 10,
+    color: 'red',
+  },
 };
 
 export default class Login extends React.Component {
@@ -97,6 +105,11 @@ export default class Login extends React.Component {
                     <img src="assets/logo.png" width="100" style={{ backgroundColor: '#9E9E9E' }}/>
                     <h1 style={ styles.headline }>Login</h1>
                 </div>
+
+                { this.state.loginError ?
+                <Paper style={styles.error}>
+                   Email oder Passwort fehlt
+                </Paper> : null }
 
                 <div style={styles.inline}>
                     <TextField floatingLabelText="Email"

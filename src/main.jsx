@@ -51,7 +51,7 @@ fbDb.on('value', (snapshot) => {
   });
   ReactDOM.render(
         <Provider store={store}>
-            <App />
+            <App user={curUser} />
         </Provider>,
         root,
     );

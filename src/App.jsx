@@ -149,7 +149,6 @@ export default class App extends React.Component {
         errorText: 'This field is required!',
         projectAlreadyExists: false,
       },
-      user: null,
     };
     // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -172,17 +171,12 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log('mount');
-    const user = firebase.auth().currentUser;
-
-    if (user) {
+    if (!this.props.user) {
       this.setState({
-        user: user.displayName,
+        drawer: {
+          open: true,
+        },
       });
-    } else {
-      this.setState({
-        user: null,
-      });
-          // this.context.history.push('/login');
     }
   }
 
@@ -233,11 +227,6 @@ export default class App extends React.Component {
   logout() {
     firebase.auth().signOut().then(() => {
       console.log('signout');
-      this.setState({
-        user: null,
-      });
-      this.closeDrawer();
-              // this.props.history.push('/login');
     }).catch((error) => {
       console.log(`logout error: ${error}`);
     });
@@ -440,7 +429,7 @@ export default class App extends React.Component {
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
                   <MenuHeader project={this.props.project}/>
-                  { this.props.user || this.state.user ?
+                  { this.props.user ?
                   <List>
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
@@ -485,7 +474,7 @@ export default class App extends React.Component {
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                     <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
                 </Drawer>
-                { this.props.user || this.state.user ?
+                { this.props.user ?
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
                           <Route exact={route.exact}
