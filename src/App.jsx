@@ -113,12 +113,6 @@ const routes = [
     component: Signup,
     icon: <InfoIcon/>,
   },
-  /* {
-    link: '/todo',
-    title: 'Todo',
-    component: Todo,
-    icon: <InfoIcon/>,
-  },*/
 ];
 
 

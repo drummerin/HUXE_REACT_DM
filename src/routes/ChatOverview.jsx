@@ -84,8 +84,6 @@ export default class Chat extends React.Component {
   };
 
   componentDidMount() {
-    // this.isUserLoggedIn();
-
     on('chat', (from, payload) => {
       this.setState({
         messages: [
@@ -109,20 +107,6 @@ export default class Chat extends React.Component {
         ],
       });
     });
-  }
-
-  isUserLoggedIn() {
-    const user = firebase.auth().currentUser;
-
-    if (user) {
-      this.setState({
-        curUser: user.displayName,
-      });
-    } else {
-      this.setState({
-        curUser: null,
-      });
-    }
   }
 
   componentWillMount() {
@@ -201,15 +185,6 @@ export default class Chat extends React.Component {
         },
       ],
     });
-
-    /* this.setState({
-      users: [
-        ...this.state.users,
-        {
-          name: this.state.nameInput,
-        },
-      ],
-    }); */
   }
 
   startChat() {
