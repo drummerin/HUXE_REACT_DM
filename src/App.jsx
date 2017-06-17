@@ -430,7 +430,7 @@ export default class App extends React.Component {
     return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
             <div>
-              <AppBar title={this.state.user}
+              <AppBar title={this.props.user}
                       onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
                       iconElementRight={<IconButton><InfoOutlineIcon/></IconButton>}
@@ -440,7 +440,7 @@ export default class App extends React.Component {
                       docked={this.state.drawer.docked}
                       onRequestChange={() => this.toggleDrawer()}>
                   <MenuHeader project={this.props.project}/>
-                  { this.state.user ?
+                  { this.props.user || this.state.user ?
                   <List>
                       <Link to={'/projects'} key={'project'} style={styles.menuLink}>
                       <ListItem key="Projects"
@@ -485,7 +485,7 @@ export default class App extends React.Component {
                     <ProjectHeaderRight project={this.props.project.projectName}/>
                     <Calendar firstDayOfWeek={1} onTouchTapDay={App.handleTouchTapDay}/>
                 </Drawer>
-                { this.state.user ?
+                { this.props.user || this.state.user ?
               <div style={{ ...styles.content, paddingLeft }}>
                   {routes.map(route => (
                           <Route exact={route.exact}
