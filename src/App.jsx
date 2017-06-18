@@ -74,6 +74,9 @@ const styles = {
   menuLink: {
     textDecoration: 'none',
   },
+  cal: {
+    width: '100%',
+  },
 };
 
 const routesLoggedIn = [
@@ -111,6 +114,7 @@ const routesLoggedOut = [
   },
 ];
 
+const fireCheck = /^[a-zA-Z0-9]*$/;
 
 @connect(store => ({
   project: store.project,
@@ -144,7 +148,6 @@ export default class App extends React.Component {
     // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
-    App.handleTouchTapDay = App.handleTouchTapDay.bind(this);
   }
 
   static propTypes = {
@@ -223,17 +226,13 @@ export default class App extends React.Component {
     this.setState({ helpDialogOpen: false });
   };
 
-  static handleTouchTapDay(event, date) {
-    console.log(`date: ${date}${event}`);
-  }
-
   logout() {
     firebase.auth().signOut().then(() => {
       this.closeDrawer();
     }).catch((error) => {
       console.log(`logout error: ${error}`);
     });
-    this.setState({redirectToLogin: true})
+    this.setState({ redirectToLogin: true });
   }
 
   addProject() {
@@ -276,14 +275,6 @@ export default class App extends React.Component {
   }
 
   handleChange = (event, newValue) => {
-    this.setState({
-      newProjectDialog: {
-        ...this.state.newProjectDialog,
-        [event.target.id]: event.target.value,
-        projectAlreadyExists: false,
-        errorText: '',
-      },
-    });
     projects.forEach((project) => {
       if (project.projectName === newValue) {
         this.setState({
@@ -296,6 +287,35 @@ export default class App extends React.Component {
         });
       }
     });
+
+    if (newValue === '' && event.target.id === 'projectName') {
+      this.setState({
+        newProjectDialog: {
+          ...this.state.newProjectDialog,
+          [event.target.id]: event.target.value,
+          projectAlreadyExists: true,
+          errorText: 'This field is required!',
+        },
+      });
+    } else if (event.target.id === 'projectName' && !fireCheck.test(newValue)) {
+      this.setState({
+        newProjectDialog: {
+          ...this.state.newProjectDialog,
+          [event.target.id]: event.target.value,
+          projectAlreadyExists: true,
+          errorText: 'empty spaces or special characters are not allowed!',
+        },
+      });
+    } else {
+      this.setState({
+        newProjectDialog: {
+          ...this.state.newProjectDialog,
+          [event.target.id]: event.target.value,
+          projectAlreadyExists: false,
+          errorText: '',
+        },
+      });
+    }
     if (this.state.newProjectDialog.projectName === '') {
       this.setState({
         newProjectDialog: {
@@ -409,8 +429,7 @@ export default class App extends React.Component {
     return <MuiThemeProvider muiTheme={this.props.theme}>
           <Router>
             <div>
-              <AppBar title={this.props.user}
-                      onLeftIconButtonTouchTap={() => this.toggleDrawer()}
+              <AppBar onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                       iconStyleLeft={{ display: this.state.drawer.docked ? 'none' : 'block' }}
                       iconElementRight={<IconButton><InfoOutlineIcon/></IconButton>}
                       onRightIconButtonTouchTap={() => this.toggleDrawerRight()}
@@ -453,7 +472,8 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                { this.props.user ? <Drawer width={310} openSecondary={true}
+                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null, overflowX: 'hidden' } : null }
+                                            openSecondary={true}
                                             open={this.state.drawerRight.open} >
                     <AppBar
                         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
@@ -461,9 +481,8 @@ export default class App extends React.Component {
                         onLeftIconButtonTouchTap={() => this.closeDrawerRight()}
                         onRightIconButtonTouchTap={() => this.handleDeleteDialogOpen()}
                     />
-                    <ProjectHeaderRight project={this.props.project}/>
-                    <Calendar firstDayOfWeek={1}
-                                               onTouchTapDay={App.handleTouchTapDay}/>
+                    <ProjectHeaderRight project={this.props.project} user={this.props.user}/>
+                    <Calendar firstDayOfWeek={1} />
                 </Drawer> : null }
                 { this.props.user ?
               <div style={{ ...styles.content, paddingLeft }}>
