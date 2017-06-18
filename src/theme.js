@@ -32,4 +32,4 @@ export function getTheme(projectName) {
   });
 }
 
-export default getTheme(projects[0].projectName);
+export default getTheme('Meeting');

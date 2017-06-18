@@ -241,7 +241,9 @@ export default class App extends React.Component {
       projectDescription: this.state.newProjectDialog.projectDescription,
       projectAuthor: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
-      projectColor: this.state.newProjectDialog.projectColor });
+      projectColor: this.state.newProjectDialog.projectColor,
+      components: '',
+    });
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',
@@ -275,19 +277,6 @@ export default class App extends React.Component {
   }
 
   handleChange = (event, newValue) => {
-    projects.forEach((project) => {
-      if (project.projectName === newValue) {
-        this.setState({
-          newProjectDialog: {
-            ...this.state.newProjectDialog,
-            [event.target.id]: event.target.value,
-            projectAlreadyExists: true,
-            errorText: 'this project already exists!',
-          },
-        });
-      }
-    });
-
     if (newValue === '' && event.target.id === 'projectName') {
       this.setState({
         newProjectDialog: {
@@ -326,6 +315,18 @@ export default class App extends React.Component {
         },
       });
     }
+    projects.forEach((project) => {
+      if (project.projectName === newValue) {
+        this.setState({
+          newProjectDialog: {
+            ...this.state.newProjectDialog,
+            [event.target.id]: event.target.value,
+            projectAlreadyExists: true,
+            errorText: 'this project already exists!',
+          },
+        });
+      }
+    });
   };
   handleDateChange = (event, date) => {
     this.setState({
@@ -472,7 +473,7 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null, overflowX: 'hidden' } : null }
+                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null } : null }
                                             openSecondary={true}
                                             open={this.state.drawerRight.open} >
                     <AppBar
