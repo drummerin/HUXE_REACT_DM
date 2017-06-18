@@ -4,8 +4,10 @@ import ProjectHeaderRight from '../components/ProjectHeaderRight';
 
 test('Project Header Test', () => {
   const component = mount(
-        <ProjectHeaderRight project='project name'/>,
+        <ProjectHeaderRight project={{projectName: 'project name', projectAuthor: 'Sophie', projectDate: '3 June 2017 Summer' }}/>,
     );
 
   expect(component.text().includes('project name')).toBe(true);
+  expect(component.text().includes('Sophie')).toBe(true);
+  expect(component.text().includes('3 June 2017')).toBe(true);
 });

@@ -17,9 +17,9 @@ const MenuHeader = ({ project }) => (
     <div style={styles.element}>
       <p>{project.projectName}</p>
       <hr/>
-        <p>Authors: {project.projectAuthor}</p>
-        <p>Description: {project.projectDescription}</p>
-        <p>Deadline: {(project.projectDate).slice(0, ((project.projectDate).indexOf('201') + 4))}</p>
+        {(project.projectAuthor !== '') ? <p>Authors: {project.projectAuthor}</p> : null }
+        {(project.projectDescription !== '') ? <p>Description: {project.projectDescription}</p> : null }
+        {(project.projectDate !== '') ? <p>Deadline: {(project.projectDate).slice(0, ((project.projectDate).indexOf('201') + 4))}</p> : null }
     </div>
 );
 
