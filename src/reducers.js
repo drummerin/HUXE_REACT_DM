@@ -17,12 +17,10 @@ export default function reducer(state = {
       };
     }
     case 'UPDATE_PROJECT': {
-      console.log(action.payload);
       let projectIndex;
       for (let i = 0; i < projects.length; i += 1) {
         if (projects[i].projectName === action.payload.projectName) {
           projectIndex = i;
-          console.log(projectIndex);
           break;
         }
       }

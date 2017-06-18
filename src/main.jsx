@@ -32,7 +32,6 @@ const fbAuth = fb.auth();
 let curUser = null;
 
 fbDb.on('value', (snapshot) => {
-  console.log('firebase data changed');
   let array = [];
   if (projects.length > 0) {
     projects.splice(0, projects.length);
@@ -40,10 +39,8 @@ fbDb.on('value', (snapshot) => {
   snapshot.forEach((childSnapshot) => {
     const childData = childSnapshot.val();
     if (childData.components != null) {
-      console.log('firebase data COMPONENT changed');
       array = Object.keys(childData.components).map(key => childData.components[key]);
       childData.components = array;
-      console.log(childData.components);
     }
     if (projects.indexOf(childData) === -1) {
       projects.push(childData);

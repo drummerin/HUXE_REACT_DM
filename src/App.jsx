@@ -145,7 +145,6 @@ export default class App extends React.Component {
         projectAlreadyExists: false,
       },
     };
-    // this.buildProjectList = this.buildProjectList.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
   }
@@ -157,10 +156,6 @@ export default class App extends React.Component {
     data: PropTypes.object,
     history: PropTypes.object,
     user: PropTypes.string,
-  };
-
-  static contextTypes = {
-    router: PropTypes.object,
   };
 
   componentDidMount() {
