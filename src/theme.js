@@ -9,12 +9,14 @@ import projects from './projects';
 
 export function getTheme(projectName) {
   const project = projects.find(loopStation => loopStation.projectName === projectName);
+  console.log(project.projectColor);
+  const color = project.projectColor;
   return getMuiTheme({
     spacing,
     fontFamily: 'Roboto, sans-serif',
     palette: {
-      primary1Color: project.projectColor,
-      primary2Color: project.projectColor,
+      primary1Color: color,
+      primary2Color: color,
       primary3Color: grey900,
       accent1Color: '#DF1C24',
       accent2Color: grey100,
@@ -32,4 +34,4 @@ export function getTheme(projectName) {
   });
 }
 
-export default getTheme('Meeting');
+export default getTheme(projects[0].projectName);

@@ -103,7 +103,7 @@ export default class Todo extends React.Component {
         checked: false,
         id: this.state.newTodo + this.state.todoId });
       const Id = +1;
-      this.setState({ newTodo: '', todoId: Id });
+      this.setState({ newTodo: '', editTodo: '', todoId: Id });
       this.updateProjectAction(this.props.project);
     }
   }

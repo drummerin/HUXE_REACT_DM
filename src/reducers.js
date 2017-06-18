@@ -18,18 +18,27 @@ export default function reducer(state = {
     }
     case 'UPDATE_PROJECT': {
       let projectIndex;
-      for (let i = 0; i < projects.length; i += 1) {
-        if (projects[i].projectName === action.payload.projectName) {
-          projectIndex = i;
-          break;
+      if (action.payload.projectName !== undefined) {
+        for (let i = 0; i < projects.length; i += 1) {
+          if (projects[i].projectName === action.payload.projectName) {
+            projectIndex = i;
+            break;
+          }
         }
       }
+      let themeX;
+      if (action.payload !== undefined) {
+        themeX = defaultTheme;// getTheme(projects[projectIndex].projectName);
+      } else {
+        themeX = defaultTheme;
+      }
+      console.log('.x.');
       return {
         ...state,
         project: {
           ...projects[projectIndex],
         },
-        theme: getTheme(action.payload.projectName),
+        theme: themeX,
       };
     }
     default: {

@@ -160,7 +160,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     const fbDb = firebase.database().ref('projects');
-    fbDb.on('value', () => {
+    fbDb.once('value', () => {
       this.updateProjectAction(this.props.project);
       this.setState({ dialogDeleteOpen: false });
     });
@@ -260,13 +260,11 @@ export default class App extends React.Component {
     firebase.database().ref('projects').on('value', (projectList) => {
       projectList.forEach((childSnapshot) => {
         const childData = childSnapshot.val();
-        console.log(`..${childData.projectName} .. ${project.projectName}`);
         if (childData.projectName === project.projectName) {
           childSnapshot.ref.remove();
         }
       });
     });
-    // }
 
     this.props.dispatch(setProjectAction(projects[0]));
   }
@@ -468,7 +466,7 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null } : null }
+                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null, overflow: 'hidden' } : null }
                                             openSecondary={true}
                                             open={this.state.drawerRight.open} >
                     <AppBar

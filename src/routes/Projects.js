@@ -17,6 +17,7 @@ import {
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
 import Component from '../components/Component';
+import projects from './projects';
 
 const styles = {
   container: {
@@ -75,6 +76,13 @@ export default class Projects extends React.Component {
       },
     };
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    const fbDb = firebase.database().ref('projects');
+    fbDb.on('value', () => {
+      this.updateProjectAction(this.props.project);
+    });
   }
 
   handleOpenDialog = () => {
