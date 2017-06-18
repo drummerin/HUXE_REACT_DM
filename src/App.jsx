@@ -5,6 +5,7 @@ import {
     BrowserRouter as Router,
     Link,
     Route,
+    Redirect,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
@@ -97,8 +98,7 @@ const routesLoggedIn = [
 ];
 const routesLoggedOut = [
   {
-    link: '/',
-    exact: true,
+    link: '/login',
     title: 'Login',
     component: Login,
     icon: <LogoutIcon/>,
@@ -233,6 +233,7 @@ export default class App extends React.Component {
     }).catch((error) => {
       console.log(`logout error: ${error}`);
     });
+    this.setState({redirectToLogin: true})
   }
 
   addProject() {
@@ -295,13 +296,13 @@ export default class App extends React.Component {
         });
       }
     });
-    if (newValue === '') {
+    if (this.state.newProjectDialog.projectName === '') {
       this.setState({
         newProjectDialog: {
           ...this.state.newProjectDialog,
           [event.target.id]: event.target.value,
           projectAlreadyExists: true,
-          errorText: 'this field is required!',
+          errorText: 'This field is required!',
         },
       });
     }
@@ -436,10 +437,11 @@ export default class App extends React.Component {
                                   onTouchTap={() => this.closeDrawer()}/>
                       </Link>
                   ))}
+                    <Link to={'/login'} key={'logout'} style={styles.menuLink}>
                     <ListItem key="logout"
                               primaryText="Logout"
                               leftIcon={<LogoutIcon/>}
-                              onTouchTap={() => this.logout()}/>
+                              onTouchTap={() => this.logout()}/></Link>
                   </List> : <List>
                           {routesLoggedOut.map(route => (
                                   <Link to={route.link} key={route.link} style={styles.menuLink}>
@@ -472,7 +474,6 @@ export default class App extends React.Component {
                              component={route.component}/>
                   ))}
                   <Route path={'/projects'} key={'/projects'} component={Projects}/>
-                  <Route path={'/'} exact={true} key={'/projectsDefault'} component={Projects}/>
               </div> : <div style={{ ...styles.content, paddingLeft }}>
                         {routesLoggedOut.map(route => (
                             <Route exact={route.exact}
@@ -481,6 +482,13 @@ export default class App extends React.Component {
                                    component={route.component}/>
                         ))}
                     </div> }
+              <Route path={'/'} exact={true} key={'/default'} render={() => (
+                  this.props.user ? (
+                          <Redirect to="/projects"/>
+                      ) : (
+                          <Redirect to="/login"/>
+                      )
+              )}/>
                 <div>
                     <Dialog
                         title="Create a new Project"
