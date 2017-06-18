@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import AddMarkerIcon from 'material-ui/svg-icons/maps/add-location';
-import EditMarkerIcon from 'material-ui/svg-icons/maps/edit-location';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -96,7 +95,6 @@ export default class MapComp extends React.Component {
     });
   }
   componentWillUnmount() {
-    console.log(this.state.lat + this.state.lng);
     if (this.state.zoom !== '') {
       firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}`).set({
         componentName: this.props.component.componentName,
