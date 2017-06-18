@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import Todo from './Todo';
 import PostIt from './PostIt';
 import Draw from './Draw';
+import MapComp from './MapComp';
+import Chat from './Chat';
 
 
 @connect(store => ({
@@ -42,9 +44,21 @@ export default class Component extends React.Component {
                   component={this.props.component}
                   name={this.props.component.componentName}/>,
       ];
+    } else if (this.props.component.componentType === 'MapComp') {
+      Compo = [
+        <MapComp key={this.props.component.componentName}
+                project={this.props.project}
+                component={this.props.component}
+                name={this.props.component.componentName}/>,
+      ];
+    } else if (this.props.component.componentType === 'Chat') {
+      Compo = [
+        <Chat key={this.props.component.componentName}
+                project={this.props.project}
+                component={this.props.component}
+                name={this.props.component.componentName}/>,
+      ];
     }
-    console.log(Compo);
-
     return <div>
         {Compo}
     </div>;

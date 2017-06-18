@@ -1,11 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Amatica+SC|Asap|Lato|Overlock|Pompiere|Puritan|Rambla|Roboto|Special+Elite|Ubuntu+Condensed');
+@import url('//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css');
 
 html, body {
     margin: 0;
     font-family: 'Ubuntu Condensed', sans-serif;
-    color: green;
 }
 
 .cursor {
     cursor: crosshair;
+}
+
+.leaflet-container {
+    height: 230px;
+    width: 260px;
 }

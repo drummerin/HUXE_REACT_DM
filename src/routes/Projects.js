@@ -47,9 +47,11 @@ const items = [
   <MenuItem key={1} value={'Todo'} primaryText="Todo" />,
   <MenuItem key={2} value={'PostIt'} primaryText="PostIt" />,
   <MenuItem key={3} value={'Draw'} primaryText="Draw" />,
-  <MenuItem key={4} value={4} primaryText="Weekends" />,
-  <MenuItem key={5} value={5} primaryText="Weekly" />,
+  <MenuItem key={4} value={'MapComp'} primaryText="Map" />,
+  <MenuItem key={5} value={'Chat'} primaryText="Chat" />,
 ];
+
+const fireCheck = /^[a-zA-Z0-9]*$/;
 
 @connect(store => ({
   project: store.project,
@@ -95,7 +97,6 @@ export default class Projects extends React.Component {
     if (this.props.project.components > 0) {
       for (let i = 0, comp = this.props.project.components; i < comp.length; i += 1) {
         if (comp[i].componentName === newValue) {
-          console.log('jumps into component checking TRUE');
           this.setState({
             newComponentDialog: {
               ...this.state.newComponentDialog,
@@ -114,6 +115,15 @@ export default class Projects extends React.Component {
           [event.target.id]: event.target.value,
           componentAlreadyExists: true,
           errorTextComponentName: 'this field is required!',
+        },
+      });
+    } else if (event.target.id === 'componentName' && !fireCheck.test(newValue)) {
+      this.setState({
+        newComponentDialog: {
+          ...this.state.newComponentDialog,
+          [event.target.id]: event.target.value,
+          componentAlreadyExists: true,
+          errorTextComponentName: 'empty spaces or special characters are not allowed!',
         },
       });
     }
@@ -160,6 +170,17 @@ export default class Projects extends React.Component {
         componentName: this.state.newComponentDialog.componentName,
         componentType: this.state.newComponentDialog.selectedComponent,
         drawable: '' });
+    } else if (this.state.newComponentDialog.selectedComponent === 'MapComp') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        mapCenter: '',
+        mapMarker: '' });
+    } else if (this.state.newComponentDialog.selectedComponent === 'Chat') {
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
+        componentName: this.state.newComponentDialog.componentName,
+        componentType: this.state.newComponentDialog.selectedComponent,
+        chatContent: '' });
     }
 
 
@@ -168,7 +189,6 @@ export default class Projects extends React.Component {
       selectedComponent: '',
     },
     });
-    console.log('add comp clicked');
     this.updateProjectAction(this.props.project);
   }
 
@@ -178,7 +198,6 @@ export default class Projects extends React.Component {
 
 
   render() {
-    console.log('render projects');
     let actions;
     if (this.state.newComponentDialog.componentAlreadyExists || this.state.newComponentDialog.selectedComponent === '') {
       actions = [
@@ -221,6 +240,8 @@ export default class Projects extends React.Component {
       ));
     }
 
+    console.log('comps');
+    console.log(components);
 
     return <div>
         {components}
@@ -230,8 +251,8 @@ export default class Projects extends React.Component {
         <ContentAdd />
       </FloatingActionButton></div>
       <div>
-        <Dialog
-            title="Create a new TodoList"
+        <Dialog contentStyle={{ width: '400px' }}
+            title="Create a new project component"
             actions={actions}
             modal={false}
             open={this.state.dialogOpen}
@@ -241,7 +262,7 @@ export default class Projects extends React.Component {
               displayRowCheckbox={false}><TableRow displayBorder={false}>
             <TableRowColumn>
                 <SelectField
-                    floatingLabelText="Component"
+                    floatingLabelText="Component type"
                     value={this.state.newComponentDialog.selectedComponent}
                     id="selectedComponent"
                     onChange={this.handleChangeComponent}
