@@ -28,9 +28,6 @@ const styles = {
     marginLeft: 10,
     marginRight: 10,
   },
-  loginMessage: {
-    padding: 15,
-  },
   ownMessages: {
     backgroundColor: 'green',
   },
