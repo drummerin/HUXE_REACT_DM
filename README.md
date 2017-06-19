@@ -1,12 +1,13 @@
-## HUXE_REACT_DM
-#### Project Members: Susanne Meyer and Sophie Drummer
+## PlanIt!
+#### A application for planning and managing projects.
+##### Project Members: Susanne Meyer and Sophie Drummer
 
-Repository for the 2nd HyperMediaUserExperienceEngineering project.
-The project topic is a webRTC based conference board, what shall contain several different contents.
-Those contents could be for example notes, post-its, small sketches, documents, images or maps.
-It should be usable at least with a 1to1 connection of two users.
+This is a repository for the 2nd HyperMedia User Experience Engineering project.
+The project topic is a project planning application, which shall contain several different contents such as todo-lists, post it notes, maps, sketches and chats.
+Multiple users are able to work on different projects simultaneously.
+Also, a webRTC based Chat component is implemented, for the best possible communication between different project members.
 
-To run this project:  
+To run this project, do the following steps:  
 
 * Download the project
 * Enter folder in your console
