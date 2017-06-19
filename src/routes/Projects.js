@@ -17,7 +17,6 @@ import {
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
 import Component from '../components/Component';
-import projects from './projects';
 
 const styles = {
   container: {

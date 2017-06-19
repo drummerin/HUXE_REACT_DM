@@ -84,8 +84,10 @@ export default class Draw extends React.Component {
       blur: true,
       lineThickness: 1,
       lineColor: '#555555',
+      selectedColor: '#555555',
       lineStyle: 'round',
       selectingColor: false,
+      eraseActive: false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -110,7 +112,7 @@ export default class Draw extends React.Component {
   }
 
   finishEditing() {
-    this.setState({ selectingColor: false, editingDraw: false, DrawContent: '', lineThickness: 1, lineColor: '#555555', blur: true });
+    this.setState({ selectingColor: false, editingDraw: false, DrawContent: '', lineThickness: 1, lineColor: this.state.selectedColor, blur: true, eraseActive: false });
   }
 
   deleteDraw() {
@@ -129,6 +131,8 @@ export default class Draw extends React.Component {
     }
     this.ctx = this.canvas.getContext('2d') || {};
     this.bcr = this.canvas.getBoundingClientRect() || {};
+
+    console.log('draw mounted');
 
     // to set the background of the component white
     this.ctx.fillStyle = '#FFFFFF';
@@ -154,8 +158,9 @@ export default class Draw extends React.Component {
     imageObj.onload = function () {
       context.drawImage(this, 0, 0);
     };
-
+    console.log(`${this.state.lineColor}hh`);
     imageObj.src = this.props.component.drawContent;
+    this.setAppearance();
   }
 
   hashTable = {};
@@ -243,14 +248,16 @@ export default class Draw extends React.Component {
   };
 
   erase = () => {
-    this.setState({ lineThickness: 10, lineColor: '#ffffff', blur: false });
+    this.setState({ lineThickness: 10, lineColor: '#ffffff', blur: false, eraseActive: true });
   };
 
   changeColor= () => {
     this.setState({ selectingColor: true,
       lineColor: this.state.selectedColor,
       lineThickness: 1,
-      blur: true });
+      blur: true,
+      eraseActive: false,
+    });
   };
   static componentToHex(c) {
     const hex = c.toString(16);
@@ -304,7 +311,7 @@ export default class Draw extends React.Component {
             <EditButton color={this.props.project.projectColor}/></IconButton><br/>
           <IconButton onTouchTap={() => this.erase()} style={styles.editDrawButton} tooltip="erase"
                       tooltipPosition="top-right">
-            <DeleteIcon color='#DDDDDD'
+            <DeleteIcon color={this.state.eraseActive ? this.props.project.projectColor : '#DDDDDD' }
                         hoverColor={this.props.project.projectColor} /> </IconButton>
           <IconButton onTouchTap={() => this.changeColor()} style={styles.editDrawButton}>
             <ColorIcon color={this.state.selectedColor}
