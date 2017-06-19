@@ -192,7 +192,6 @@ export default class Call extends React.Component {
   }
 
   hangup() {
-    console.log('hangup');
     this.setState({
       callState: CALL_STATE_NONE,
       remoteName: null,

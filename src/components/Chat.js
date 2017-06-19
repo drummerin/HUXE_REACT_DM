@@ -6,7 +6,6 @@ import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
-import CommunicationCallEnd from 'material-ui/svg-icons/communication/call-end';
 import PersonButton from 'material-ui/svg-icons/maps/person-pin';
 import FlatButton from 'material-ui/FlatButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
@@ -134,7 +133,6 @@ export default class Chat extends React.Component {
       curUser: null,
       users: [],
     };
-    this.handleChange = this.handleChange.bind(this);
     this.nameInput = this.nameInput.bind(this);
     this.setName = this.setName.bind(this);
     this.addUser = this.addUser.bind(this);
@@ -145,21 +143,6 @@ export default class Chat extends React.Component {
     project: PropTypes.object,
     dispatch: PropTypes.func,
     component: PropTypes.object,
-  };
-
-  handleChange = (event, newValue) => {
-    this.setState({
-      [event.target.id]: newValue,
-      errorText: '',
-      userNameAlreadyExists: false,
-    });
-    if (newValue === '') {
-      this.setState({
-        ...this.state.nameInput,
-        userNameAlreadyExists: true,
-        errorText: 'this field is required!',
-      });
-    }
   };
 
   componentDidMount() {
@@ -245,23 +228,23 @@ export default class Chat extends React.Component {
     this.addUser();
   };
 
-    addUser = () => {
-        const id = Math.round(Math.random() * 100000000000).toString(36);
-        send('users', 'all', {
-            id: this.state.nameInput,
-            name: this.state.nameInput,
-        });
-        this.setState({
-            users: [
-                ...this.state.users,
-                {
-                    name: this.state.nameInput,
-                    id,
-                    me: true,
-                },
-            ],
-        });
-    };
+  addUser = () => {
+    const id = Math.round(Math.random() * 100000000000).toString(36);
+    send('users', 'all', {
+      id: this.state.nameInput,
+      name: this.state.nameInput,
+    });
+    this.setState({
+      users: [
+        ...this.state.users,
+        {
+          name: this.state.nameInput,
+          id,
+          me: true,
+        },
+      ],
+    });
+  };
 
   startChat = () => {
     this.setState({
@@ -392,7 +375,7 @@ export default class Chat extends React.Component {
                 { this.state.users ?
                     this.state.users.map(user => (
                         !user.me ?
-                            <div key={user.name} style={styles.user}>
+                            <div key={user.id} style={styles.user}>
                               <span style={{ marginRight: 10 }}>{user.name}</span>
                               <IconButton style={styles.iconButton}
                                           onTouchTap={() => this.startChat()}>
@@ -403,12 +386,7 @@ export default class Chat extends React.Component {
                                           disabled={this.state.call}>
                                 <CommunicationCall color={green600}/>
                               </IconButton>
-                              <IconButton style={styles.iconButton}
-                                          onTouchTap={() => this.hangup()}
-                                          disabled={!this.state.call}>
-                                <CommunicationCallEnd color={green600}/>
-                              </IconButton>
-                            </div> : <div key={user.name} style={styles.user}>
+                            </div> : <div key={user.id} style={styles.user}>
                               <span style={{ marginRight: 10 }}>{user.name}</span>
                             </div>
                     )) : <div style={styles.user}>no user</div>
