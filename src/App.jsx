@@ -160,7 +160,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     const fbDb = firebase.database().ref('projects');
-    fbDb.on('value', () => {
+    fbDb.once('value', () => {
       this.updateProjectAction(this.props.project);
       this.setState({ dialogDeleteOpen: false });
     });
@@ -236,7 +236,9 @@ export default class App extends React.Component {
       projectDescription: this.state.newProjectDialog.projectDescription,
       projectAuthor: this.state.newProjectDialog.projectAuthor,
       projectDate: this.state.newProjectDialog.projectDate,
-      projectColor: this.state.newProjectDialog.projectColor });
+      projectColor: this.state.newProjectDialog.projectColor,
+      components: '',
+    });
     this.setState({ newProjectDialog: {
       projectName: '',
       projectDescription: '',
@@ -258,31 +260,16 @@ export default class App extends React.Component {
     firebase.database().ref('projects').on('value', (projectList) => {
       projectList.forEach((childSnapshot) => {
         const childData = childSnapshot.val();
-        console.log(`..${childData.projectName} .. ${project.projectName}`);
         if (childData.projectName === project.projectName) {
           childSnapshot.ref.remove();
         }
       });
     });
-    // }
 
     this.props.dispatch(setProjectAction(projects[0]));
   }
 
   handleChange = (event, newValue) => {
-    projects.forEach((project) => {
-      if (project.projectName === newValue) {
-        this.setState({
-          newProjectDialog: {
-            ...this.state.newProjectDialog,
-            [event.target.id]: event.target.value,
-            projectAlreadyExists: true,
-            errorText: 'this project already exists!',
-          },
-        });
-      }
-    });
-
     if (newValue === '' && event.target.id === 'projectName') {
       this.setState({
         newProjectDialog: {
@@ -321,6 +308,18 @@ export default class App extends React.Component {
         },
       });
     }
+    projects.forEach((project) => {
+      if (project.projectName === newValue) {
+        this.setState({
+          newProjectDialog: {
+            ...this.state.newProjectDialog,
+            [event.target.id]: event.target.value,
+            projectAlreadyExists: true,
+            errorText: 'this project already exists!',
+          },
+        });
+      }
+    });
   };
   handleDateChange = (event, date) => {
     this.setState({
@@ -467,7 +466,7 @@ export default class App extends React.Component {
                           ))}
                       </List> }
               </Drawer>
-                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null, overflowX: 'hidden' } : null }
+                { this.props.user ? <Drawer containerStyle={ this.state.drawerRight.open ? { width: '310px', maxWidth: null, overflow: 'hidden' } : null }
                                             openSecondary={true}
                                             open={this.state.drawerRight.open} >
                     <AppBar

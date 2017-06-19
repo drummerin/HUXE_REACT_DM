@@ -17,6 +17,7 @@ import {
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
 import Component from '../components/Component';
+import projects from './projects';
 
 const styles = {
   container: {
@@ -77,6 +78,13 @@ export default class Projects extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    const fbDb = firebase.database().ref('projects');
+    fbDb.on('value', () => {
+      this.updateProjectAction(this.props.project);
+    });
+  }
+
   handleOpenDialog = () => {
     this.setState({ dialogOpen: true });
   };
@@ -94,7 +102,7 @@ export default class Projects extends React.Component {
         errorTextComponentName: '',
       },
     });
-    if (this.props.project.components > 0) {
+    if (!isNaN(this.props.project.components)) {
       for (let i = 0, comp = this.props.project.components; i < comp.length; i += 1) {
         if (comp[i].componentName === newValue) {
           this.setState({
@@ -107,8 +115,7 @@ export default class Projects extends React.Component {
           });
         }
       }
-    }
-    if (newValue === '') {
+    } else if (newValue === '') {
       this.setState({
         newComponentDialog: {
           ...this.state.newComponentDialog,
@@ -174,8 +181,10 @@ export default class Projects extends React.Component {
       firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
         componentName: this.state.newComponentDialog.componentName,
         componentType: this.state.newComponentDialog.selectedComponent,
-        mapCenter: '',
-        mapMarker: '' });
+        mapCenterX: 48.3667,
+        mapCenterY: 14.516,
+        mapZoom: 14,
+        markers: '' });
     } else if (this.state.newComponentDialog.selectedComponent === 'Chat') {
       firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.state.newComponentDialog.componentName}`).set({
         componentName: this.state.newComponentDialog.componentName,
@@ -239,9 +248,6 @@ export default class Projects extends React.Component {
                 name={Comp.componentName}/>
       ));
     }
-
-    console.log('comps');
-    console.log(components);
 
     return <div>
         {components}
