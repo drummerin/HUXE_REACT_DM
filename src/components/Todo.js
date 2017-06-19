@@ -98,10 +98,10 @@ export default class Todo extends React.Component {
 
   addTodoItem() {
     if (this.state.newTodo !== '') {
-      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${this.state.newTodo + this.state.todoId}`).set({
+      firebase.database().ref(`projects/${this.props.project.projectName}/components/${this.props.component.componentName}/todos/${(this.state.newTodo).substring(0, 3) + this.state.todoId}`).set({
         todo: this.state.newTodo,
         checked: false,
-        id: this.state.newTodo + this.state.todoId });
+        id: (this.state.newTodo).substring(0, 3) + this.state.todoId });
       const Id = +1;
       this.setState({ newTodo: '', editTodo: '', todoId: Id });
       this.updateProjectAction(this.props.project);

@@ -132,8 +132,6 @@ export default class Draw extends React.Component {
     this.ctx = this.canvas.getContext('2d') || {};
     this.bcr = this.canvas.getBoundingClientRect() || {};
 
-    console.log('draw mounted');
-
     // to set the background of the component white
     this.ctx.fillStyle = '#FFFFFF';
     this.ctx.fillRect(0, 0, 260, 240);
@@ -158,7 +156,6 @@ export default class Draw extends React.Component {
     imageObj.onload = function () {
       context.drawImage(this, 0, 0);
     };
-    console.log(`${this.state.lineColor}hh`);
     imageObj.src = this.props.component.drawContent;
     this.setAppearance();
   }

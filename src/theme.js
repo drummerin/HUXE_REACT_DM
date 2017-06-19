@@ -9,7 +9,6 @@ import projects from './projects';
 
 export function getTheme(projectName) {
   const project = projects.find(loopStation => loopStation.projectName === projectName);
-  console.log(project.projectColor);
   const color = project.projectColor;
   return getMuiTheme({
     spacing,
