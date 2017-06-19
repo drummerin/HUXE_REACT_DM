@@ -81,7 +81,7 @@ export default class Signup extends React.Component {
           user.updateProfile({
             displayName: this.state.user.name,
           }).then(() => {
-            this.props.history.push('/projects');
+            this.props.history.push('/login');
           }).catch((error) => {
             this.setState({
               signupError: true,
