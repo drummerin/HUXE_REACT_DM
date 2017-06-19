@@ -17,7 +17,7 @@ export default function reducer(state = {
       };
     }
     case 'UPDATE_PROJECT': {
-      let projectIndex;
+      let projectIndex = -1;
       if (action.payload.projectName !== undefined) {
         for (let i = 0; i < projects.length; i += 1) {
           if (projects[i].projectName === action.payload.projectName) {
@@ -26,13 +26,10 @@ export default function reducer(state = {
           }
         }
       }
-      let themeX;
-      if (action.payload !== undefined) {
-        themeX = defaultTheme;// getTheme(projects[projectIndex].projectName);
-      } else {
-        themeX = defaultTheme;
+      let themeX = defaultTheme;
+      if (projectIndex !== -1) {
+        themeX = getTheme(projects[projectIndex].projectName);
       }
-      console.log('.x.');
       return {
         ...state,
         project: {
