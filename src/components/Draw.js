@@ -200,7 +200,6 @@ export default class Draw extends React.Component {
       this.ctx.closePath();
       this.hashTable = {};
 
-            // remove duplicates
       this.rawData = this.rawData.filter((element) => {
         const key = JSON.stringify(element);
         const match = Boolean(this.hashTable[key]);
@@ -314,8 +313,7 @@ export default class Draw extends React.Component {
             <ColorIcon color={this.state.selectedColor}
                          hoverColor={this.props.project.projectColor} /> </IconButton></div>
         </Paper> :
-          <div></div>
-         }
+          <div></div>}
         { this.state.selectingColor ? <div style={ styles.popover }>
               <div style={ styles.cover } onClick={ this.handleClose }/>
               <SketchPicker color={ this.state.selectedColor }

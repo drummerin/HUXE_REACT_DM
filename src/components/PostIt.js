@@ -88,23 +88,23 @@ export default class PostIt extends React.Component {
             {this.props.component.componentName}
             <IconButton onTouchTap={() => this.deletePostIt()} style={styles.button}>
                 <DeleteIcon color='#DDDDDD'
-                            hoverColor={this.props.project.projectColor} /> </IconButton>
+                            hoverColor={this.props.project.projectColor} /></IconButton>
             {(this.state.editingPostIt) ?
-          <IconButton onTouchTap={() => this.finishEditing()} style={styles.button}>
-            <OKButton color='#DDDDDD'
-                      hoverColor={this.props.project.projectColor} /> </IconButton> :
-          <IconButton onTouchTap={() => this.editPostIt()} style={styles.button}>
-            <EditButton color='#DDDDDD'
-                        hoverColor={this.props.project.projectColor} /></IconButton>}
-            <hr/></div>
+              <IconButton onTouchTap={() => this.finishEditing()} style={styles.button}>
+                <OKButton color='#DDDDDD'
+                          hoverColor={this.props.project.projectColor} /> </IconButton> :
+              <IconButton onTouchTap={() => this.editPostIt()} style={styles.button}>
+                <EditButton color='#DDDDDD'
+                          hoverColor={this.props.project.projectColor} /></IconButton>}
+          <hr/></div>
           <div style={styles.paperMiddle}>
-                {(this.state.editingPostIt) ?
+            {(this.state.editingPostIt) ?
             <InputField id="postItContent"
                         value={this.state.postItContent}
                         multiLine={true}
                         onChange={this.handleChange}/> :
                     <span>{this.props.component.postItText}</span>}
-            </div>
+          </div>
         </Paper>
       </div>;
   }

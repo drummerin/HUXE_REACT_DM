@@ -168,7 +168,6 @@ export default class Todo extends React.Component {
                                     style={styles.editButton}>
                         <OKButton color='#DDDDDD'
                                   hoverColor={this.props.project.projectColor} /> </IconButton>}
-
                     leftCheckbox={
                         <Checkbox style={styles.checkbox} key={todo.todo}
                                   value={todo.checked}
@@ -188,18 +187,18 @@ export default class Todo extends React.Component {
                 <DeleteIcon color='#DDDDDD'
                             hoverColor={this.props.project.projectColor} /> </IconButton>
             <hr/></div>
-          <div style={styles.paperMiddle}><List>
-                {todoList}
-          </List></div>
+            <div style={styles.paperMiddle}><List>
+                  {todoList}
+            </List></div>
             <div style={styles.paperBottom}><hr/>
-            <InputField style={styles.input}
-                       floatingLabelText="add todo"
-                       id="newTodo"
-                       value={this.state.newTodo}
-                       onChange={this.handleChange}/>
-              <IconButton style={styles.button} onTouchTap={() => this.addTodoItem()}>
-                <OKButton color='#DDDDDD'
-                          hoverColor={this.props.project.projectColor}/></IconButton>
+                <InputField style={styles.input}
+                           floatingLabelText="add todo"
+                           id="newTodo"
+                           value={this.state.newTodo}
+                           onChange={this.handleChange}/>
+                  <IconButton style={styles.button} onTouchTap={() => this.addTodoItem()}>
+                    <OKButton color='#DDDDDD'
+                              hoverColor={this.props.project.projectColor}/></IconButton>
             </div>
         </Paper>
       </div>;
