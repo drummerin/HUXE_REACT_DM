@@ -43,7 +43,7 @@ export default class About extends React.Component {
             <hr/>
             <div style={styles.paperMiddle}>
             <p>
-                <b>A application for planning and managing projects.</b> <br/>
+                <b>An application for planning and managing projects.</b> <br/>
                 This is the 2nd HyperMedia User Experience Engineering project of
                 Sophie Drummer & Susanne Meyer. The project topic is a project
                 planning application, which shall contain several different
