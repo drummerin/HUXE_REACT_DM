@@ -245,22 +245,23 @@ export default class Chat extends React.Component {
     this.addUser();
   };
 
-  addUser = () => {
-    send('users', 'all', {
-      id: this.state.nameInput,
-      name: this.state.nameInput,
-    });
-    this.setState({
-      users: [
-        ...this.state.users,
-        {
-          name: this.state.nameInput,
-          id: this.state.nameInput,
-          me: true,
-        },
-      ],
-    });
-  };
+    addUser = () => {
+        const id = Math.round(Math.random() * 100000000000).toString(36);
+        send('users', 'all', {
+            id: this.state.nameInput,
+            name: this.state.nameInput,
+        });
+        this.setState({
+            users: [
+                ...this.state.users,
+                {
+                    name: this.state.nameInput,
+                    id,
+                    me: true,
+                },
+            ],
+        });
+    };
 
   startChat = () => {
     this.setState({

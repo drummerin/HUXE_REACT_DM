@@ -5,7 +5,6 @@ import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CommunicationCall from 'material-ui/svg-icons/communication/call';
-import CommunicationCallEnd from 'material-ui/svg-icons/communication/call-end';
 import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -166,6 +165,7 @@ export default class Chat extends React.Component {
   }
 
   addUser() {
+    const id = Math.round(Math.random() * 100000000000).toString(36);
     send('users', 'all', {
       id: this.state.nameInput,
       name: this.state.nameInput,
@@ -175,7 +175,7 @@ export default class Chat extends React.Component {
         ...this.state.users,
         {
           name: this.state.nameInput,
-          id: this.state.nameInput,
+          id,
           me: true,
         },
       ],
@@ -199,7 +199,7 @@ export default class Chat extends React.Component {
                         { this.state.users ?
                             this.state.users.map(user => (
                                 !user.me ?
-                                    <div key={user.name} style={styles.user}>
+                                    <div key={user.id} style={styles.user}>
                                         <span style={{ marginRight: 10 }}>{user.name}</span>
                                         <IconButton style={styles.iconButton}
                                                     onTouchTap={() => this.startChat()}>
@@ -210,12 +210,7 @@ export default class Chat extends React.Component {
                                                     disabled={this.state.call}>
                                             <CommunicationCall color={green600}/>
                                         </IconButton>
-                                        <IconButton style={styles.iconButton}
-                                                    onTouchTap={() => this.hangup()}
-                                                    disabled={!this.state.call}>
-                                            <CommunicationCallEnd color={green600}/>
-                                        </IconButton>
-                                    </div> : <div key={user.name} style={styles.user}>
+                                    </div> : <div key={user.id} style={styles.user}>
                                         <span style={{ marginRight: 10 }}>{user.name}</span>
                                     </div>
                             )) : 'no user'
