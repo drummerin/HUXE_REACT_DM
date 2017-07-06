@@ -16,6 +16,18 @@ const root = document.querySelector('#root');
 const middleware = applyMiddleware(promiseMiddleware(), loggerMiddleware);
 const store = createStore(reducers, middleware);
 
+// Check for browser support of service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          // Successful registration
+          console.log('Registration of Service Worker was successful:', registration.scope);
+        }).catch((error) => {
+        // Failed registration, service worker wasn't installed
+          console.log('Service worker registration failed, error:', error);
+        });
+}
+
 const config = {
   apiKey: 'AIzaSyC1lpMBv_ko79Ei-XdqkdAtqr4STPnTrRY',
   authDomain: 'planit-e2048.firebaseapp.com',
@@ -28,8 +40,17 @@ const fb = firebase.initializeApp(config);
 
 const fbDb = fb.database().ref('projects');
 
-const fbAuth = fb.auth();
-let curUser = null;
+// const fbAuth = fb.auth();
+const curUser = 'Mr. Test';
+
+const connectedRef = firebase.database().ref('.info/connected');
+connectedRef.on('value', (snap) => {
+  if (snap.val() === true) {
+    console.log('connected');
+  } else {
+    console.log('not connected');
+  }
+});
 
 fbDb.on('value', (snapshot) => {
   let array = [];
@@ -54,6 +75,7 @@ fbDb.on('value', (snapshot) => {
     );
 });
 
+/*
 fbAuth.onAuthStateChanged((user) => {
   if (user) {
     curUser = user.displayName;
@@ -74,3 +96,4 @@ fbAuth.onAuthStateChanged((user) => {
         root,
     );
 });
+*/
