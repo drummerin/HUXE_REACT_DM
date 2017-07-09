@@ -17,6 +17,7 @@ import {
 import Dialog from 'material-ui/Dialog';
 import { updateProject as updateProjectAction } from '../actions';
 import Component from '../components/Component';
+import Offline from '../components/Offline';
 
 const styles = {
   container: {
@@ -53,6 +54,7 @@ const items = [
 
 const fireCheck = /^[a-zA-Z0-9]*$/;
 
+
 @connect(store => ({
   project: store.project,
 }))
@@ -66,6 +68,7 @@ export default class Projects extends React.Component {
       value: '',
       projectList: [],
       dialogOpen: false,
+      online: true,
       newComponentDialog: {
         componentName: '',
         errorTextComponent: 'This field is required!',
@@ -81,6 +84,15 @@ export default class Projects extends React.Component {
     const fbDb = firebase.database().ref('projects');
     fbDb.on('value', () => {
       this.updateProjectAction(this.props.project);
+    });
+
+    const connectedRef = firebase.database().ref('.info/connected');
+    connectedRef.on('value', (snap) => {
+      if (snap.val() === true) {
+        this.setState({ online: true });
+      } else {
+        this.setState({ online: false });
+      }
     });
   }
 
@@ -250,6 +262,7 @@ export default class Projects extends React.Component {
 
     return <div>
         {components}
+      <div>{this.state.online ? null : <Offline key={'offline'}/>}</div>
       <div><FloatingActionButton mini={true} style={styles.addButton}
                                  backgroundColor={this.props.project.projectColor}
                                  onTouchTap={() => this.handleOpenDialog()}>

@@ -40,8 +40,8 @@ const fb = firebase.initializeApp(config);
 
 const fbDb = fb.database().ref('projects');
 
-// const fbAuth = fb.auth();
-const curUser = 'Mr. Test';
+const fbAuth = fb.auth();
+let curUser = null;
 
 const connectedRef = firebase.database().ref('.info/connected');
 connectedRef.on('value', (snap) => {
@@ -49,8 +49,42 @@ connectedRef.on('value', (snap) => {
     console.log('connected');
   } else {
     console.log('not connected');
+    firebase.database().goOffline();
   }
 });
+
+
+function Create(callback) {
+  let online2 = false;
+  return {
+    getIsOnline() { return online2; },
+    setIsOnline(p) { online2 = p; callback(online2); },
+  };
+}
+
+const status = Create((online2) => {
+  console.log(`online?: ${online2}`);
+  if (online2) {
+    firebase.database().goOnline();
+  } else {
+    firebase.database().goOffline();
+  }
+});
+
+const myInit = { mode: 'no-cors' };
+
+function check() {
+  fetch('https://www.google.de/', myInit)
+        .then(() => {
+          console.log('ok');
+          status.setIsOnline(true);
+        }).catch(() => {
+          console.log('error');
+          status.setIsOnline(false);
+        });
+}
+setInterval(check, 3000);
+
 
 fbDb.on('value', (snapshot) => {
   let array = [];
@@ -73,9 +107,11 @@ fbDb.on('value', (snapshot) => {
         </Provider>,
         root,
     );
+}, (error) => {
+    // The callback failed.
+  console.error(error);
 });
 
-/*
 fbAuth.onAuthStateChanged((user) => {
   if (user) {
     curUser = user.displayName;
@@ -96,4 +132,4 @@ fbAuth.onAuthStateChanged((user) => {
         root,
     );
 });
-*/
+

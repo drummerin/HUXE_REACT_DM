@@ -16,7 +16,7 @@ import ProjectsIcon from 'material-ui/svg-icons/av/library-books';
 import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-// import ChatIcon from 'material-ui/svg-icons/communication/chat';
+import ChatIcon from 'material-ui/svg-icons/communication/chat';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
@@ -40,7 +40,7 @@ import {
 } from 'material-ui/Table';
 import { List, ListItem } from 'material-ui/List';
 import Projects from './routes/Projects';
-// import Chat from './routes/ChatOverview.jsx';
+import Chat from './routes/ChatOverview.jsx';
 import Login from './routes/Login';
 import Signup from './routes/Signup';
 import About from './routes/About';
@@ -78,12 +78,12 @@ const styles = {
 };
 
 const routesLoggedIn = [
-    /* {
+  {
     link: '/chat',
     title: 'Chat',
     component: Chat,
     icon: <ChatIcon/>,
-  },*/
+  },
   {
     link: '/about',
     title: 'Info',

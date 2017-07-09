@@ -1,0 +1,10 @@
+diff a/src/App.jsx b/src/App.jsx	(rejected hunks)
+@@ -16,7 +16,7 @@
+ import ComponentIcon from 'material-ui/svg-icons/action/dashboard';
+ import SelectField from 'material-ui/SelectField';
+ import MenuItem from 'material-ui/MenuItem';
+-import ChatIcon from 'material-ui/svg-icons/communication/chat';
++// import ChatIcon from 'material-ui/svg-icons/communication/chat';
+ import EditIcon from 'material-ui/svg-icons/image/edit';
+ import InfoIcon from 'material-ui/svg-icons/action/info';
+ import DeleteIcon from 'material-ui/svg-icons/action/delete';
