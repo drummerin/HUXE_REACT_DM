@@ -63,7 +63,7 @@ function Create(callback) {
 }
 
 const status = Create((online2) => {
-  console.log(`online?: ${online2}`);
+  // console.log(`online?: ${online2}`);
   if (online2) {
     firebase.database().goOnline();
   } else {
@@ -76,10 +76,9 @@ const myInit = { mode: 'no-cors' };
 function check() {
   fetch('https://www.google.de/', myInit)
         .then(() => {
-          console.log('ok');
           status.setIsOnline(true);
         }).catch(() => {
-          console.log('error');
+          // console.log('error');
           status.setIsOnline(false);
         });
 }

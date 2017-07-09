@@ -51,9 +51,8 @@ self.addEventListener("activate", event => {
 
 
  self.addEventListener('fetch', function(event) {
-    console.log('Fetch event for ', event.request.url);
-
     if(event.request.url.toString().search('www.google.de') === -1 ) {
+        console.log('Fetch event for ', event.request.url);
         event.respondWith(
             caches.match(event.request).then(function (response) {
                 console.log(event.request);
