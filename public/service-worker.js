@@ -21,8 +21,6 @@ const urlsToCache = [
   'http://b.tile.osm.org/14/8852/5669.png',
 ];
 
-const OFFLINE_URL = '404.html';
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
         caches.open(CACHE_NAME)
@@ -54,9 +52,6 @@ self.addEventListener("activate", event => {
 
  self.addEventListener('fetch', function(event) {
     console.log('Fetch event for ', event.request.url);
-    // Parse the URL:
-    const requestURL = new URL(event.request.url);
-    console.log(requestURL.hostname);
 
     if(event.request.url.toString().search('www.google.de') === -1 ) {
         event.respondWith(
@@ -74,34 +69,11 @@ self.addEventListener("activate", event => {
                 })
             }).catch(function (error) {
                 console.log('error while fetching..');
-                return new Response("Hello world!");
+                return caches.match('/404.html');
             })
         );
     }
 });
-/*
-self.addEventListener('fetch', function(e) {
-    console.log('[ServiceWorker] Fetch', e.request.url);
-    const dataUrl = 'https://planit-e2048.firebaseio.com/';
-    if (e.request.url.indexOf(dataUrl) === 0) {
-        e.respondWith(
-            fetch(e.request)
-                .then(function(response) {
-                    return caches.open(dataCacheName).then(function(cache) {
-                        cache.put(e.request.url, response.clone());
-                        console.log('[ServiceWorker] Fetched&Cached Data');
-                        return response;
-                    });
-                })
-        );
-    } else {
-        e.respondWith(
-            caches.match(e.request).then(function(response) {
-                return response || fetch(e.request);
-            })
-        );
-    }
-});*/
 
 
 
